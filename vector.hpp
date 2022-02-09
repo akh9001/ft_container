@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/02/01 17:47:07 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/02/09 14:22:56 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <iterator>
 
 /*
  *jlkll
@@ -53,10 +54,53 @@ namespace ft
 			// typedef	const T&	const_reference;
 			// typedef	T*			pointer;
 			// typedef	const T*	const_pointer;
-			// typedef	size_t		size_type;
+			typedef std::ptrdiff_t										difference_type;
+			typedef	std::size_t											size_type;
 			//* ptrdiff_t difference_type : Difference between two pointers
 			//* std::ptrdiff_t is the signed integer type of the result of subtracting two pointers.
-		
 		explicit vector (const allocator_type& alloc = allocator_type());
+		explicit vector (size_type n, const value_type& val = value_type(),
+                 const allocator_type& alloc = allocator_type());
 	};
+
+template <class T, class Alloc>
+vector<T, Alloc>::vector(const allocator_type& alloc = allocator_type())
+{
+	// Alloc<T> myAllocator;
+
+	// // T	*arr = myAllocator.allocate(0);
+	// pointer	= myAllocator.allocate(0);
+	pointer = alloc.allocate(0);
+}
+
+template <class T, class Alloc>
+vector<T, Alloc>::vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
+{
+	//* if (n > alloc.max_size)
+	//* 	std::cout << "Error" << std::endl;
+	pointer = alloc.allocate(n);
+	for (int i = 0; i < n; i++)
+		pointer[i] = val;
+}
 };
+
+//  template <class T>
+//  class vector_iterator : public iterator <T>
+//  {
+	 
+//  };
+
+// vector_iterator<T> : iterator<std::random...., T>
+// {
+// 	T* current;
+
+// 	operator ++()
+// 	{
+// 		current++;
+// 	}
+	
+// 	bool operator ==(iterator val)
+// 	{	
+// 		return (this == val)
+// 	}
+// }
