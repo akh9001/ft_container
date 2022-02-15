@@ -61,7 +61,9 @@
 // };
 
 // template <>
-// struct is_integral<int>:: false_type {};
+// struct is_integral<int>:: false_type {
+// 	static const bool value = true;
+// };
 
 // template <>
 // struct is_integral<long> {
@@ -89,6 +91,7 @@
 // 	static const bool value = true;
 // };
 
+//is_same<int, int>::value
 // int fn()
 // {
 
@@ -129,6 +132,25 @@ int main() {
 	a(std::is_integral<int>());
 	std::distance()
 		
-	
   return 0;
+}
+
+int a(int)
+{
+	std::cout << "Int\n";
+	return 6;
+}
+
+char a(float)
+{
+	std::cout << "float\n";
+	return 'a';
+}
+//std::cout << sizeof(a(6.5f)) << std::endl;
+
+// enable_if<is_pointer<T>::value>::type
+template<typename T>
+enable_if<is_pointer<T>::value, int>::type fn(enable_if<is_pointer<T>::value, int>::type a)
+{
+	
 }

@@ -61,3 +61,11 @@ int main()
 
 	return 0;
 }
+// template < class T>
+// class Iterator
+// {
+// 	private :
+// 		T *_ptr;
+// 	public :
+		
+// }

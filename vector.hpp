@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/02/09 14:22:56 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/02/10 16:27:45 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,10 @@ namespace ft
 	class vector
 	{
 		private:
+			size_type		_size;
+			size_type		_capacity;
+			allocator_type	_alloc;
+			pointer			_ptr;
 
 		public:
 		
@@ -50,37 +54,38 @@ namespace ft
 			typedef typename allocator_type::pointer				pointer;
 			typedef typename allocator_type::difference_type		difference_type;
 			typedef typename const allocator_type::const_pointer	const_pointer;
-			// typedef	T&			reference;
-			// typedef	const T&	const_reference;
-			// typedef	T*			pointer;
-			// typedef	const T*	const_pointer;
-			typedef std::ptrdiff_t										difference_type;
-			typedef	std::size_t											size_type;
-			//* ptrdiff_t difference_type : Difference between two pointers
-			//* std::ptrdiff_t is the signed integer type of the result of subtracting two pointers.
-		explicit vector (const allocator_type& alloc = allocator_type());
-		explicit vector (size_type n, const value_type& val = value_type(),
-                 const allocator_type& alloc = allocator_type());
+			typedef std::ptrdiff_t									difference_type;
+			typedef	std::size_t										size_type;
+			//? ptrdiff_t difference_type : Difference between two pointers
+			//? std::ptrdiff_t is the signed integer type of the result of subtracting two pointers.
+			//* Member functions :
+			explicit vector (const allocator_type& alloc = allocator_type());
+			explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type());
 	};
 
 template <class T, class Alloc>
 vector<T, Alloc>::vector(const allocator_type& alloc = allocator_type())
 {
-	// Alloc<T> myAllocator;
-
-	// // T	*arr = myAllocator.allocate(0);
-	// pointer	= myAllocator.allocate(0);
-	pointer = alloc.allocate(0);
+	_size = 0;
+	_capacity = 0;
+	_alloc = alloc;
+	_ptr = alloc.allocate(0);
 }
 
 template <class T, class Alloc>
 vector<T, Alloc>::vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
 {
 	//* if (n > alloc.max_size)
-	//* 	std::cout << "Error" << std::endl;
-	pointer = alloc.allocate(n);
+	//* 	throw std::bad_alloc();
+	// pointer = alloc.allocate(n);
+	// for (int i = 0; i < n; i++)
+	// 	pointer[i] = val;
+	_size = n;
+	_capacity = n;
+	_alloc = alloc;
+	_ptr = alloc.allocate(n);
 	for (int i = 0; i < n; i++)
-		pointer[i] = val;
+		_alloc.construct(_ptr)
 }
 };
 
