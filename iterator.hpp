@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 18:15:16 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/02/16 03:09:59 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/02/16 04:39:25 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,23 +41,33 @@ namespace ft
 	template <class Category, class T, class Distance = ptrdiff_t, class Pointer = T*, class Reference = T&>
 	struct iterator
 	{
-	  typedef T        		value_type;
-	  typedef Distance 		difference_type;
-	  typedef Pointer  		pointer;
-	  typedef Reference		reference;
-	  typedef Category 		iterator_category;
+		typedef T        		value_type;
+		typedef Distance 		difference_type;
+		typedef Pointer  		pointer;
+		typedef Reference		reference;
+		typedef Category 		iterator_category;
 	};
 
 	template <class _Iter>
 	class random_access_iterator : public iterator<std::random_access_iterator_tag, _Iter>
 	{
 		public:
-			typedef _Iter                                                      iterator_type;
-			typedef typename iterator_traits<iterator_type>::iterator_category iterator_category;
-			typedef typename iterator_traits<iterator_type>::value_type        value_type;
-			typedef typename iterator_traits<iterator_type>::difference_type   difference_type;
-			typedef typename iterator_traits<iterator_type>::pointer           pointer;
-			typedef typename iterator_traits<iterator_type>::reference         reference;
+			typedef _Iter                                                      					iterator_type;
+			typedef typename iterator<std::random_access_iterator_tag, Iter>::iterator_category iterator_category;
+			typedef typename iterator<std::random_access_iterator_tag, Iter>::value_type        value_type;
+			typedef typename iterator<std::random_access_iterator_tag, Iter>::difference_type   difference_type;
+			typedef typename iterator<std::random_access_iterator_tag, Iter>::pointer           pointer;
+			typedef typename iterator<std::random_access_iterator_tag, Iter>::reference         reference;
+			// typedef typename iterator_traits<iterator_type>::iterator_category iterator_category;
+			// typedef typename iterator_traits<iterator_type>::value_type        value_type;
+			// typedef typename iterator_traits<iterator_type>::difference_type   difference_type;
+			// typedef typename iterator_traits<iterator_type>::pointer           pointer;
+			// typedef typename iterator_traits<iterator_type>::reference         reference;
+		//! Consructors :
+		random_access_iterator(void) : __current(NULL);
+		random_access_iterator(const random_access_iterator &src){*this = src};
+		random_access_iterator& operator=(const random_access_iterator &rhs) : __current(rhs.__current) {return(*this)};
+		
 		private:
 			pointer __current;
 	};
