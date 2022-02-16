@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 18:15:16 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/02/16 04:39:25 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/02/16 17:52:35 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,11 +63,25 @@ namespace ft
 			// typedef typename iterator_traits<iterator_type>::difference_type   difference_type;
 			// typedef typename iterator_traits<iterator_type>::pointer           pointer;
 			// typedef typename iterator_traits<iterator_type>::reference         reference;
-		//! Consructors :
-		random_access_iterator(void) : __current(NULL);
-		random_access_iterator(const random_access_iterator &src){*this = src};
+		//! Constructors :
+		random_access_iterator(void) : __current(NULL) {};
+		random_access_iterator(const random_access_iterator &it) {*this = it};
 		random_access_iterator& operator=(const random_access_iterator &rhs) : __current(rhs.__current) {return(*this)};
-		
+		//! operators overload :
+		bool operator==(const random_access_iterator& lhs, const random_access_iterator& rhs){ return (lhs.__current == rhs.__current); }
+		bool operator!=(const random_access_iterator& lhs, const random_access_iterator& rhs){ return (lhs.__current != rhs.__current); }
+		bool operator<(const random_access_iterator& lhs, const random_access_iterator& rhs){ return (lhs.__current < rhs.__current); }
+		bool operator>(const random_access_iterator& lhs, const random_access_iterator& rhs){ return (lhs.__current > rhs.__current); }
+		bool operator<=(const random_access_iterator& lhs, const random_access_iterator& rhs){ return (lhs.__current <= rhs.__current); }
+		bool operator>=(const random_access_iterator& lhs, const random_access_iterator& rhs){ return (lhs.__current >= rhs.__current); }
+			//* increment and decrement operators :
+		random_access_iterator&	operator++(void) {this->__current++; return(*this);} //* prefix has no parameter
+		random_access_iterator	operator++(int) {random_access_iterator temp(*this); this->__current++; return(temp);} //* postfix has an int parameter
+		random_access_iterator&	operator--(void) {this->__current--; return(*this);} //* prefix has no parameter
+		random_access_iterator	operator--(int) {random_access_iterator temp(*this); this->__current--; return(temp);} //* postfix has an int parameter
+			//* unary operators :
+		//?random_access_iterator	&operator*() {if (__current) return *__current;}; => wash 5assni protecti la7zaak 
+		reference	operator*(void) {return *__current;};
 		private:
 			pointer __current;
 	};
@@ -104,8 +118,4 @@ namespace ft
 			typedef const T&					reference;
 			typedef random_access_iterator_tag	iterator_category;	
 	};
-}
-int main()
-{
-	
 }
