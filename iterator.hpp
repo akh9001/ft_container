@@ -6,63 +6,26 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 18:15:16 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/02/16 17:52:35 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/02/16 19:41:33 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include <iostream>
 
-// template <class Category,              // iterator::iterator_category
-//           class T,                     // iterator::value_type
-//           class Distance = ptrdiff_t,  // iterator::difference_type
-//           class Pointer = T*,          // iterator::pointer
-//           class Reference = T&         // iterator::reference
-//           > class iterator;
-// template <class T>
-// class iterator
-// {
-// private:
-// 	/* data */
-// public:
-// 	iterator(/* args */);
-// 	~iterator();
-// };
-
-// !The iterator categories :
-// struct input_iterator_tag {}; //* Empty class to identify the category of an iterator as an input iterator.
-// struct output_iterator_tag {};
-// struct forward_iterator_tag : public input_iterator_tag {};
-// struct bidirectional_iterator_tag : public forward_iterator_tag {};
-// struct random_access_iterator_tag : public bidirectional_iterator_tag {};
-
+//? Lvalues and rvalues: a friendly definition : https://www.internalpointers.com/post/understanding-meaning-lvalues-and-rvalues-c
 namespace ft
 {
-	template <class Category, class T, class Distance = ptrdiff_t, class Pointer = T*, class Reference = T&>
-	struct iterator
-	{
-		typedef T        		value_type;
-		typedef Distance 		difference_type;
-		typedef Pointer  		pointer;
-		typedef Reference		reference;
-		typedef Category 		iterator_category;
-	};
 
 	template <class _Iter>
-	class random_access_iterator : public iterator<std::random_access_iterator_tag, _Iter>
+	class random_access_iterator
 	{
 		public:
-			typedef _Iter                                                      					iterator_type;
-			typedef typename iterator<std::random_access_iterator_tag, Iter>::iterator_category iterator_category;
-			typedef typename iterator<std::random_access_iterator_tag, Iter>::value_type        value_type;
-			typedef typename iterator<std::random_access_iterator_tag, Iter>::difference_type   difference_type;
-			typedef typename iterator<std::random_access_iterator_tag, Iter>::pointer           pointer;
-			typedef typename iterator<std::random_access_iterator_tag, Iter>::reference         reference;
-			// typedef typename iterator_traits<iterator_type>::iterator_category iterator_category;
-			// typedef typename iterator_traits<iterator_type>::value_type        value_type;
-			// typedef typename iterator_traits<iterator_type>::difference_type   difference_type;
-			// typedef typename iterator_traits<iterator_type>::pointer           pointer;
-			// typedef typename iterator_traits<iterator_type>::reference         reference;
+			typedef typename ft::iterator_traits<_Iter>::iterator_category 		iterator_category;
+			typedef typename ft::iterator_traits<_Iter>::value_type        		value_type;
+			typedef typename ft::iterator_traits<_Iter>::difference_type   		difference_type;
+			typedef typename ft::iterator_traits<_Iter>::pointer           		pointer;
+			typedef typename ft::iterator_traits<_Iter>::reference         		reference;
 		//! Constructors :
 		random_access_iterator(void) : __current(NULL) {};
 		random_access_iterator(const random_access_iterator &it) {*this = it};
@@ -81,7 +44,15 @@ namespace ft
 		random_access_iterator	operator--(int) {random_access_iterator temp(*this); this->__current--; return(temp);} //* postfix has an int parameter
 			//* unary operators :
 		//?random_access_iterator	&operator*() {if (__current) return *__current;}; => wash 5assni protecti la7zaak 
-		reference	operator*(void) {return *__current;};
+		reference						operator*(void) {return *__current;};
+		pointer							operator->(void) {return __current;}; // std::vector<std::string> test(9, "lol"); std::vector<std::string>::iterator it = test.begin(); it->append();"if the underline container were an int there will be no function to call"
+		random_access_iterator			operator+(difference_type n) {random_access_iterator tmp; tmp.__current = __current + n; return tmp;}
+		random_access_iterator			operator-(difference_type n) {random_access_iterator tmp; tmp.__current = __current - n; return tmp;}
+		difference_type					operator-(const random_access_iterator& rhs) {random_access_iterator tmp; tmp.__current = __current - rhs.__current; return tmp;}
+		friend random_access_iterator 	operator+(difference_type lhs, const random_access_iterator& rhs) {return rhs.operator+(lhs);}
+		friend random_access_iterator 	operator-(difference_type lhs, const random_access_iterator& rhs) {return rhs.operator-(lhs);}
+		random_access_iterator&			operator+=(difference_type n) {__current += n; return *this;}
+		random_access_iterator&			operator-=(difference_type n) {__current -= n; return *this;}
 		private:
 			pointer __current;
 	};
