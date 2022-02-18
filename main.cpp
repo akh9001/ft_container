@@ -221,54 +221,105 @@
 // 	// 	std::cout << *(beg + i) << std::endl;
 // 	return (0);
 // }
-struct Y 
-{
-  void f() { };
-};
+// struct Y 
+// {
+//   void f() { };
+// };
 
-struct X 
-{
-	Y* ptr;
-	Y* operator->() {return ptr;};
-};
+// struct X 
+// {
+// 	Y* ptr;
+// 	Y* operator->() {return ptr;};
+// };
 
 
-class abc
+// class abc
+// {
+// 	public:
+// 	int a ;
+// 	int b;
+// 	abc(){}
+// 	~abc(){}
+// };
+// class base
+// {
+// 	public :
+// 	int a;
+
+// 	base(){}
+// 	~base(){}
+// 	base &operator*()
+// 	{
+// 		std::cout << "test " << std::endl;
+// 		return *this;
+// 	}
+// };
+
+// template<typename T>
+// class test
+// {
+// 	T _t;
+// 	public :
+// 		T base() const {return _t;}
+// 		T& setter();
+// 		test(const T& l) : _t(l){};
+// 		template<typename _T>
+// 		test(const test<_T>&  t) : _t(t.base()){ std::cout << "copy constructor " << std::endl;};
+// };
+
+class tomate
 {
-	public:
-	int a ;
-	int b;
-	abc(){}
-	~abc(){}
-};
-class base
-{
+	private: 
+		std::string _num;
 	public :
-	int a;
-
-	base(){}
-	~base(){}
-	base &operator*()
-	{
-		std::cout << "test " << std::endl;
-		return *this;
-	}
+		tomate(): _num("22"){std::cout << "hamida" << std::endl;}
+		std::string&	get(){return _num};
+		std::string	__get(){return _num};
+		~tomate(){};
 };
+
 int main()
 {
 //   X x;
 //   x->f();
 // std::string *a;
 // a->at(7);
-std::vector<std::string> test(9, "lol");
-std::vector<std::string>::iterator it = test.begin();
-*it = "15";
-std::cout << *it << std::endl;
-*(it + 1) = "16";
-*it++;
-std::cout << *(5 + it) << std::endl;
+// std::vector<std::string> test(9, "lol");
+// std::vector<std::string>::iterator it = test.begin();
+// *it = "15";
+// std::cout << *it << std::endl;
+// *(it + 1) = "16";
+// *it++;
+// std::cout << *(5 + it) << std::endl;
 // operator(int)
 // it->append();
 	// base a;
 	// std::cout << *a << std::endl;
+	// std::vector<int> a;
+
+
+	// std::vector<int>::iterator it = a.begin();
+	// std::vector<int>::const_iterator cit = a.begin();
+	// int b = ++it;
+	// std::vector<int> v(2, 12);
+	// const std::vector<int>::iterator it = v.begin();
+	// std::vector<int>::iterator it1(it);
+	// int *base = it.base();
+	// // std::vector<int>::iterator it1 (base);
+	// std::cout << *it1 << std::endl;
+	// std::cout << *it << std::endl;
+	// test<int*>  t(it.base());
+	// test<int*>  h(it.base());
+	// test<const int *> k(t);
+	// t.setter() = 12;
+	// h = &a;
+	// *(t.setter()) = 12;
+	// std::cout << t.setter() << std::endl;
+	// std::cout <<  k.base() << std::endl;
+	// std::cout <<  t.base() << std::endl;
+	int k, m;
+	tomate lol();
+	k = l.get();
+	m = l.__get();
+	return (0);
 }

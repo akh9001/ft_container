@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/02/10 16:27:45 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/02/18 03:26:18 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,15 +47,19 @@ namespace ft
 		public:
 		
 			//* Member types :
-			typedef	T												value_type;
-			typedef	Alloc											allocator_type;
-			typedef typename allocator_type::reference				reference;
-			typedef typename allocator_type::const_reference		const_reference;
-			typedef typename allocator_type::pointer				pointer;
-			typedef typename allocator_type::difference_type		difference_type;
-			typedef typename const allocator_type::const_pointer	const_pointer;
-			typedef std::ptrdiff_t									difference_type;
-			typedef	std::size_t										size_type;
+			typedef	T													value_type;
+			typedef	Alloc												allocator_type;
+			typedef typename allocator_type::reference					reference;
+			typedef typename allocator_type::const_reference			const_reference;
+			typedef typename allocator_type::pointer					pointer;
+			typedef typename allocator_type::difference_type			difference_type;
+			typedef typename allocator_type::const_pointer				const_pointer;
+			typedef typename ft::random_access_iterator<pointer>		iterator;
+			typedef typename ft::random_access_iterator<const_pointer>	const_iterator;
+			typedef typename ft::reverse_iterator<pointer>				reverse_iterator;
+			typedef typename ft::reverse_iterator<const_pointer>		const_reverse_iterator;
+			typedef std::ptrdiff_t										difference_type;
+			typedef	std::size_t											size_type;
 			//? ptrdiff_t difference_type : Difference between two pointers
 			//? std::ptrdiff_t is the signed integer type of the result of subtracting two pointers.
 			//* Member functions :
