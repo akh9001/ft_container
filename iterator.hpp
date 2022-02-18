@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 18:15:16 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/02/18 05:54:19 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/02/18 21:00:18 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,9 @@ namespace ft
 		
 		//! getter function
 		value_type	base(void) const{ return(__current);};
-		
+		/*
+		//** const _Iterator& base() const { return _M_current; } why const refrence ??
+		*/
 		//! Constructors :
 		random_access_iterator(void) : __current(_Iter()) {};
 		template<typename _Iter> //! it should be a template so the instantiation of an iterator<T> with an iterator<const T> would work 
@@ -72,21 +74,22 @@ namespace ft
 		
 		//! operators overload :
 			//* increment and decrement operators :
-		random_access_iterator&	operator++(void) {this->__current++; return(*this);} //* prefix has no parameter
-		random_access_iterator	operator++(int) {random_access_iterator temp(*this); this->__current++; return(temp);} //* postfix has an int parameter
-		random_access_iterator&	operator--(void) {this->__current--; return(*this);} //* prefix has no parameter
-		random_access_iterator	operator--(int) {random_access_iterator temp(*this); this->__current--; return(temp);} //* postfix has an int parameter
+		random_access_iterator&	operator++(void) {++__current; return(*this);} //* prefix has no parameter
+		random_access_iterator	operator++(int) {return random_access_iterator(__current++);} //?{random_access_iterator temp(*this); this->__current++; return(temp);} //* postfix has an int parameter
+		random_access_iterator&	operator--(void) {--__current; return(*this);} //* prefix has no parameter
+		random_access_iterator	operator--(int) { return random_access_iterator(__current--);}//?{random_access_iterator temp(*this); this->__current--; return(temp);} //* postfix has an int parameter
 			//* unary operators :
 		//?random_access_iterator	&operator*() {if (__current) return *__current;}; => wash 5assni protecti la7zaak 
 		reference						operator*(void) const {return *__current;}
-		pointer							operator->(void) {return __current;}; // std::vector<std::string> test(9, "lol"); std::vector<std::string>::iterator it = test.begin(); it->append();"if the underline container were an int there will be no function to call"
-		random_access_iterator			operator+(difference_type n) {random_access_iterator tmp; tmp.__current = __current + n; return tmp;}
-		random_access_iterator			operator-(difference_type n) {random_access_iterator tmp; tmp.__current = __current - n; return tmp;}
-		difference_type					operator-(const random_access_iterator& rhs) {random_access_iterator tmp; tmp.__current = __current - rhs.__current; return tmp;}
-		friend random_access_iterator 	operator+(difference_type lhs, const random_access_iterator& rhs) {return rhs.operator+(lhs);}
-		friend random_access_iterator 	operator-(difference_type lhs, const random_access_iterator& rhs) {return rhs.operator-(lhs);}
-		random_access_iterator&			operator+=(difference_type n) {__current += n; return *this;}
-		random_access_iterator&			operator-=(difference_type n) {__current -= n; return *this;}
+		pointer							operator->(void) const {return __current;}; // std::vector<std::string> test(9, "lol"); std::vector<std::string>::iterator it = test.begin(); it->append();"if the underline container were an int there will be no function to call"
+		reference						operator[](const difference_type& n) const {return (__current[n])};
+		random_access_iterator			operator+(const difference_type& n) const {return random_access_iterator(__current + n}//?{random_access_iterator tmp; tmp.__current = __current + n; return tmp;}
+		random_access_iterator			operator-(const difference_type& n) const {return random_access_iterator(__current - n}//?{random_access_iterator tmp; tmp.__current = __current - n; return tmp;}
+		// difference_type					operator-(const random_access_iterator& rhs) {random_access_iterator tmp; tmp.__current = __current - rhs.__current; return tmp;}
+		// friend random_access_iterator 	operator+(difference_type lhs, const random_access_iterator& rhs) {return rhs.operator+(lhs);}
+		// friend random_access_iterator 	operator-(difference_type lhs, const random_access_iterator& rhs) {return rhs.operator-(lhs);}
+		random_access_iterator&			operator+=(const difference_type& n) {__current += n; return *this;}
+		random_access_iterator&			operator-=(const difference_type& n) {__current -= n; return *this;}
 		private:
 			value_type	__current;
 			random_access_iterator(const reference curr) : _current(curr) {};  
@@ -104,5 +107,7 @@ namespace ft
 	bool operator<=(const random_access_iterator<_IterL>& lhs, const random_access_iterator<_IterR>& rhs){ return (lhs.__current <= rhs.__current); }
 	template <typename _IterL, typename _IterR> 
 	bool operator>=(const random_access_iterator<_IterL>& lhs, const random_access_iterator<_IterR>& rhs){ return (lhs.__current >= rhs.__current); }
-
+	// template <typename _IterL, typename _IterR> 
+	// random_access_iterator<_IterL, _IterR>::difference_type&	operator-(const random_access_iterator<_IterL>& lhs, const random_access_iterator<_IterR>& rhs){ return (lhs.__current - rhs.__current); }
+	//TODO 1 - a - b, 2 - 
 }

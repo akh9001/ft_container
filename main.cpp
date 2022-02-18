@@ -272,9 +272,9 @@ class tomate
 	private: 
 		std::string _num;
 	public :
-		tomate(): _num("22"){std::cout << "hamida" << std::endl;}
-		std::string&	get(){return _num};
-		std::string	__get(){return _num};
+		tomate(): _num("22"){};//{std::cout << "hamida" << std::endl;}
+		const std::string&	get(){return _num;}
+		std::string		__get(){return _num;}
 		~tomate(){};
 };
 
@@ -317,9 +317,37 @@ int main()
 	// std::cout << t.setter() << std::endl;
 	// std::cout <<  k.base() << std::endl;
 	// std::cout <<  t.base() << std::endl;
-	int k, m;
-	tomate lol();
-	k = l.get();
-	m = l.__get();
+	tomate lol;
+	tomate lola;
+	const std::string &ptr = lola.get();
+	// std::string ptr;
+	// ptr = lola.get();
+	// ptr = "36";
+	std::cout << ptr << std::endl;
+	std::cout << lola.__get() << std::endl;
 	return (0);
 }
+
+// class batata
+// {
+// 	int _n;
+// 	public:
+// 		batata(int k): _n(k){};
+// 		int	get_n()const {return _n;}
+// 		batata operator++(int){return batata(_n++);}
+// 		friend std::ostream& operator<<(std::ostream& os, const batata& bt) {return (os << bt.get_n() <<  std::endl);}
+// };
+
+// int	main(void)
+// {
+// 	// batata bt(5);
+
+// 	// std::cout << bt++ << std::endl;
+// 	// std::cout << bt << std::endl;
+// 	std::vector<int> vect(2, 4);
+// 	std::vector<int>::iterator it= vect.begin();
+// 	it[0] = 5;
+// 	std::cout << it[0] << std::endl;
+// 	std::cout << it[1] << std::endl;
+// 	return (0);
+// }
