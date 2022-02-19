@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 18:15:16 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/02/18 21:00:18 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/02/19 14:48:01 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,11 @@ namespace ft
 	template <typename T> 
 	struct iterator_traits<T*>
 	{
-			typedef ptrdiff_t					difference_type;
-			typedef T							value_type;
-			typedef T*							pointer;
-			typedef T&							reference;
-			typedef random_access_iterator_tag	iterator_category;	
+			typedef ptrdiff_t						difference_type;
+			typedef T								value_type;
+			typedef T*								pointer;
+			typedef T&								reference;
+			typedef std::random_access_iterator_tag	iterator_category;	
 	};
 
 	template <typename T> 
@@ -61,16 +61,13 @@ namespace ft
 			typedef typename ft::iterator_traits<_Iter>::iterator_category 		iterator_category;		//* T1 - T2
 		
 		//! getter function
-		value_type	base(void) const{ return(__current);};
-		/*
-		//** const _Iterator& base() const { return _M_current; } why const refrence ??
-		*/
+		const value_type&	base(void) const{ return(__current);};
 		//! Constructors :
 		random_access_iterator(void) : __current(_Iter()) {};
 		template<typename _Iter> //! it should be a template so the instantiation of an iterator<T> with an iterator<const T> would work 
 		random_access_iterator(const random_access_iterator<_Iter> &it) {*this = it};
-		template<typename __Iter>
-		random_access_iterator<_Iter>& operator=(const random_access_iterator<__Iter> &rhs) : __current(rhs.base()) {return(*this)};
+		template<typename __Iterator>
+		random_access_iterator<__Iterator>& operator=(const random_access_iterator<__Iterator> &rhs) : __current(rhs.base()) {return(*this)};
 		
 		//! operators overload :
 			//* increment and decrement operators :
@@ -85,9 +82,6 @@ namespace ft
 		reference						operator[](const difference_type& n) const {return (__current[n])};
 		random_access_iterator			operator+(const difference_type& n) const {return random_access_iterator(__current + n}//?{random_access_iterator tmp; tmp.__current = __current + n; return tmp;}
 		random_access_iterator			operator-(const difference_type& n) const {return random_access_iterator(__current - n}//?{random_access_iterator tmp; tmp.__current = __current - n; return tmp;}
-		// difference_type					operator-(const random_access_iterator& rhs) {random_access_iterator tmp; tmp.__current = __current - rhs.__current; return tmp;}
-		// friend random_access_iterator 	operator+(difference_type lhs, const random_access_iterator& rhs) {return rhs.operator+(lhs);}
-		// friend random_access_iterator 	operator-(difference_type lhs, const random_access_iterator& rhs) {return rhs.operator-(lhs);}
 		random_access_iterator&			operator+=(const difference_type& n) {__current += n; return *this;}
 		random_access_iterator&			operator-=(const difference_type& n) {__current -= n; return *this;}
 		private:
@@ -96,18 +90,20 @@ namespace ft
 	};
 
 	template <typename _IterL, typename _IterR> 
-	bool operator==(const random_access_iterator<_IterL>& lhs, const random_access_iterator<_IterR>& rhs){ return (lhs.__current == rhs.__current); }
+	bool operator==(const random_access_iterator<_IterL>& lhs, const random_access_iterator<_IterR>& rhs){ return (lhs.base() == rhs.base()); }
 	template <typename _IterL, typename _IterR> 
-	bool operator!=(const random_access_iterator<_IterL>& lhs, const random_access_iterator<_IterR>& rhs){ return (lhs.__current != rhs.__current); }
+	bool operator!=(const random_access_iterator<_IterL>& lhs, const random_access_iterator<_IterR>& rhs){ return (lhs.base() != rhs.base()); }
 	template <typename _IterL, typename _IterR> 
-	bool operator<(const random_access_iterator<_IterL>& lhs, const random_access_iterator<_IterR>& rhs){ return (lhs.__current < rhs.__current); }
+	bool operator<(const random_access_iterator<_IterL>& lhs, const random_access_iterator<_IterR>& rhs){ return (lhs.base() < rhs.base()); }
 	template <typename _IterL, typename _IterR> 
-	bool operator>(const random_access_iterator<_IterL>& lhs, const random_access_iterator<_IterR>& rhs){ return (lhs.__current > rhs.__current); }
+	bool operator>(const random_access_iterator<_IterL>& lhs, const random_access_iterator<_IterR>& rhs){ return (lhs.base() > rhs.base()); }
 	template <typename _IterL, typename _IterR> 
-	bool operator<=(const random_access_iterator<_IterL>& lhs, const random_access_iterator<_IterR>& rhs){ return (lhs.__current <= rhs.__current); }
+	bool operator<=(const random_access_iterator<_IterL>& lhs, const random_access_iterator<_IterR>& rhs){ return (lhs.base() <= rhs.base()); }
 	template <typename _IterL, typename _IterR> 
-	bool operator>=(const random_access_iterator<_IterL>& lhs, const random_access_iterator<_IterR>& rhs){ return (lhs.__current >= rhs.__current); }
-	// template <typename _IterL, typename _IterR> 
-	// random_access_iterator<_IterL, _IterR>::difference_type&	operator-(const random_access_iterator<_IterL>& lhs, const random_access_iterator<_IterR>& rhs){ return (lhs.__current - rhs.__current); }
-	//TODO 1 - a - b, 2 - 
+	bool operator>=(const random_access_iterator<_IterL>& lhs, const random_access_iterator<_IterR>& rhs){ return (lhs.base() >= rhs.base()); }
+	template <typename _Iter> 
+	bool operator+(const ptrdiff_t& n, const random_access_iterator<_Iter>& rhs){ return (lhs.base() >= rhs.base()); }
+	template <typename _IterL, typename _IterR>
+	ptrdiff_t operator-(const random_access_iterator<_IterL>& lhs, const random_access_iterator<_IterR>){return (lhs.base() - rhs.base());}
 }
+// typename random_access_iterator<_IterL>::difference_type is okay to replace it by ptrdiff_t ??
