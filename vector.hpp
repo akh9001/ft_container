@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/02/18 03:26:18 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/01 21:17:46 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <memory>
 #include <vector>
 #include <iterator>
+#include "iterator.hpp"
 
 /*
  *jlkll
@@ -35,62 +36,143 @@
 */
 namespace ft
 {
-	template < class T, class Alloc = std::allocator<T> >
-	class vector
+	template < typename T, typename Alloc = std::allocator<T> >
+	class Vector
 	{
+
+		public:
+		
+			//* Member types :
+			typedef	T														value_type;
+			typedef	Alloc													allocator_type;
+			typedef typename allocator_type::reference						reference;
+			typedef typename allocator_type::const_reference				const_reference;
+			typedef typename allocator_type::pointer						pointer;
+			typedef typename allocator_type::difference_type				difference_type;
+			typedef typename allocator_type::const_pointer					const_pointer;
+			typedef typename ft::random_access_iterator<pointer>			iterator;
+			typedef typename ft::random_access_iterator<const_pointer>		const_iterator;
+			typedef typename ft::reverse_iterator<iterator>					reverse_iterator;
+			typedef typename ft::reverse_iterator<const_iterator>			const_reverse_iterator;
+			typedef	std::size_t												size_type;
+			//? ptrdiff_t difference_type : Difference between two pointers
+			//? std::ptrdiff_t is the signed integer type of the result of subtracting two pointers.
+			//* Member functions :
+			explicit Vector (const allocator_type& alloc = allocator_type())
+			{
+				_size = 0;
+				_capacity = 0;
+				_alloc = alloc;
+				// _ptr = alloc.allocate(0);
+				_ptr = nullptr;
+			}
+			explicit Vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
+			{
+				//* if (n > alloc.max_size)
+				//* 	throw std::bad_alloc();
+				// pointer = alloc.allocate(n);
+				// for (int i = 0; i < n; i++)
+				// 	pointer[i] = val;
+				_size = n;
+				_capacity = n;
+				_alloc = alloc;
+				_ptr = alloc.allocate(n);
+				for (int i = 0; i < n; i++)
+					_alloc.construct(_ptr, val);			
+			}
+			template <typename InIter>
+			Vector (InIter first, InIter last, const allocator_type& alloc = allocator_type())
+			{
+				typename InIter::difference_type diff_type;
+
+				diff_type = last - first;
+				_size = diff_type;
+				_capacity = diff_type;
+				_alloc = alloc;
+				_ptr = alloc.allocate(_capacity);
+				for(int i = 0; i < diff_type && first != last; i++)
+					_ptr[i] = *first++;
+			}
+			Vector (const Vector& x)
+			{
+				*this = x;
+			}
+			
+			Vector& operator=(const Vector& x)
+			{
+				// if (_size)
+				// {
+				// 	_size = x.;
+				// 	_capacity = diff_type;
+				// 	_alloc = alloc;
+				// 	_ptr = alloc.allocate(_capacity);
+				// }
+			}
+			
+			~Vector(void)
+			{
+				for(int i = 0; i < _size; i++)
+					_alloc.destroy(_ptr + i); //? Calls the destructor of the object pointed to by p (Calls p->~U()).
+				_alloc.deallocate(_ptr, _capacity);
+			}
+		//! Iterators:
+		//* Returns an iterator pointing to the first element in the vector.
+			iterator begin(void) {return (iterator(_ptr));}
+			const_iterator begin(void) const{return (iterator(_ptr));}
+		//* Returns an iterator referring to the past-the-end element in the vector container.
+		//? The past-the-end element is the theoretical element that would follow the last element in the vector.
+		//? It does not point to any element, and thus shall not be dereferenced.
+			iterator end() { return(iterator(_ptr + _size));}
+			const_iterator end() const { return iterator(_ptr + _size);}
+		//* Returns a reverse iterator pointing to the last element in the vector.
+			reverse_iterator rbegin() {return (reverse_iterator(end()));}
+			const_reverse_iterator rbegin() const {reverse_iterator(end()));}
+		//* Returns a reverse iterator pointing to the theoretical element preceding the first element in the vector.
+			reverse_iterator rend(){ return(reverse_iterator(begin()));}
+			const_reverse_iterator rend() const{ return(reverse_iterator(begin()));}
+		//! Capacity:
+		//* Returns the number of elements in the vector.
+			size_type size() const {return (_size);}
+		//* Return maximum size
+			size_type max_size() const{;}
 		private:
 			size_type		_size;
 			size_type		_capacity;
 			allocator_type	_alloc;
 			pointer			_ptr;
-
-		public:
-		
-			//* Member types :
-			typedef	T													value_type;
-			typedef	Alloc												allocator_type;
-			typedef typename allocator_type::reference					reference;
-			typedef typename allocator_type::const_reference			const_reference;
-			typedef typename allocator_type::pointer					pointer;
-			typedef typename allocator_type::difference_type			difference_type;
-			typedef typename allocator_type::const_pointer				const_pointer;
-			typedef typename ft::random_access_iterator<pointer>		iterator;
-			typedef typename ft::random_access_iterator<const_pointer>	const_iterator;
-			typedef typename ft::reverse_iterator<pointer>				reverse_iterator;
-			typedef typename ft::reverse_iterator<const_pointer>		const_reverse_iterator;
-			typedef std::ptrdiff_t										difference_type;
-			typedef	std::size_t											size_type;
-			//? ptrdiff_t difference_type : Difference between two pointers
-			//? std::ptrdiff_t is the signed integer type of the result of subtracting two pointers.
-			//* Member functions :
-			explicit vector (const allocator_type& alloc = allocator_type());
-			explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type());
 	};
 
-template <class T, class Alloc>
-vector<T, Alloc>::vector(const allocator_type& alloc = allocator_type())
-{
-	_size = 0;
-	_capacity = 0;
-	_alloc = alloc;
-	_ptr = alloc.allocate(0);
-}
+	// template <typename T, typename Alloc>
+	// vector<T, Alloc>::vector(const allocator_type& alloc)
+	// {
+	// 	_size = 0;
+	// 	_capacity = 0;
+	// 	_alloc = alloc;
+	// 	_ptr = alloc.allocate(0);
+	// }
 
-template <class T, class Alloc>
-vector<T, Alloc>::vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
-{
-	//* if (n > alloc.max_size)
-	//* 	throw std::bad_alloc();
-	// pointer = alloc.allocate(n);
-	// for (int i = 0; i < n; i++)
-	// 	pointer[i] = val;
-	_size = n;
-	_capacity = n;
-	_alloc = alloc;
-	_ptr = alloc.allocate(n);
-	for (int i = 0; i < n; i++)
-		_alloc.construct(_ptr)
-}
+	// template <typename T, typename Alloc>
+	// vector<T, Alloc>::vector (size_type n, const value_type& val, const allocator_type& alloc)
+	// {
+	// 	//* if (n > alloc.max_size)
+	// 	//* 	throw std::bad_alloc();
+	// 	// pointer = alloc.allocate(n);
+	// 	// for (int i = 0; i < n; i++)
+	// 	// 	pointer[i] = val;
+	// 	_size = n;
+	// 	_capacity = n;
+	// 	_alloc = alloc;
+	// 	_ptr = alloc.allocate(n);
+	// 	for (int i = 0; i < n; i++)
+	// 		_alloc.construct(_ptr);
+	// }
+	
+	// template <typename T, typename Alloc>
+	// template <typename InputIterator>
+	// vector<T, Alloc>::vector(InputIterator first, InputIterator last, const allocator_type& alloc)
+	// {
+		
+	// }
 };
 
 //  template <class T>
