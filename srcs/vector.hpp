@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/01 21:17:46 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/05 13:15:40 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,64 +134,47 @@ namespace ft
 		//* Returns the number of elements in the vector.
 			size_type size() const {return (_size);}
 		//* Return maximum size
-			size_type max_size() const{;}
+			size_type max_size() const{return(_alloc.max_size());}
+		//* Resizes the container so that it contains n elements.
+			void resize (size_type n, value_type val = value_type())
+			{
+				int				i = 0;
+				pointer			tmp = _ptr;
+				size_type		numElToadd = n - _size;
+				allocator_type	tmp_alloc;
+				
+				if (n < _size)
+				{
+					for(int j = n; j < _size; ++j)
+						_alloc.destroy(_ptr + j);
+				}
+				else
+				{
+					if (n > _capacity)
+					{
+						tmp = tmp_alloc.allocate(_capacity * 2);
+						for(i; i < _size; ++i)
+							tmp[i] = _ptr[i];
+					}
+					for(i; i < numElToadd; ++i)
+						tmp[i] = val;
+					if (n > _capacity)
+					{
+						for(int j = 0; j < _size; ++j)
+							_alloc.destroy(_ptr + j);
+						_alloc.deallocate(_ptr, _capacity);
+						_ptr = tmp;
+						_alloc = tmp_alloc;
+						_capacity *= 2;
+					}
+				}
+				_size = n;
+			}
+
 		private:
 			size_type		_size;
 			size_type		_capacity;
 			allocator_type	_alloc;
 			pointer			_ptr;
 	};
-
-	// template <typename T, typename Alloc>
-	// vector<T, Alloc>::vector(const allocator_type& alloc)
-	// {
-	// 	_size = 0;
-	// 	_capacity = 0;
-	// 	_alloc = alloc;
-	// 	_ptr = alloc.allocate(0);
-	// }
-
-	// template <typename T, typename Alloc>
-	// vector<T, Alloc>::vector (size_type n, const value_type& val, const allocator_type& alloc)
-	// {
-	// 	//* if (n > alloc.max_size)
-	// 	//* 	throw std::bad_alloc();
-	// 	// pointer = alloc.allocate(n);
-	// 	// for (int i = 0; i < n; i++)
-	// 	// 	pointer[i] = val;
-	// 	_size = n;
-	// 	_capacity = n;
-	// 	_alloc = alloc;
-	// 	_ptr = alloc.allocate(n);
-	// 	for (int i = 0; i < n; i++)
-	// 		_alloc.construct(_ptr);
-	// }
-	
-	// template <typename T, typename Alloc>
-	// template <typename InputIterator>
-	// vector<T, Alloc>::vector(InputIterator first, InputIterator last, const allocator_type& alloc)
-	// {
-		
-	// }
 };
-
-//  template <class T>
-//  class vector_iterator : public iterator <T>
-//  {
-	 
-//  };
-
-// vector_iterator<T> : iterator<std::random...., T>
-// {
-// 	T* current;
-
-// 	operator ++()
-// 	{
-// 		current++;
-// 	}
-	
-// 	bool operator ==(iterator val)
-// 	{	
-// 		return (this == val)
-// 	}
-// }

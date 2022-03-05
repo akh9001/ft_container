@@ -129,8 +129,19 @@ int main() {
 	// if (typeid(traits::iterator_category)==typeid(std::random_access_iterator_tag))
 	// 	std::cout << "int* is a random-access iterator";
 
-	a(std::is_integral<int>());
-	std::distance()
+	// a(std::is_integral<int>());
+	// std::distance()
+
+	std::vector<int> v;
+
+	for(int i = 0; i < 9; i++)
+		v.push_back(i);
+
+	std::vector<int>::reverse_iterator rit(v.rbegin());
+	std::vector<int>::iterator it(v.begin());
+
+	std::cout << *it << std::endl;
+	std::cout << *rit << std::endl;
 		
   return 0;
 }

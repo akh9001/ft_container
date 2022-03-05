@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 18:15:16 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/01 20:19:16 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/05 11:37:36 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ namespace ft
 		random_access_iterator			operator-(const difference_type& n) const {return random_access_iterator(__current - n);}//?{random_access_iterator tmp; tmp.__current = __current - n; return tmp;}
 		random_access_iterator&			operator+=(const difference_type& n) {__current += n; return *this;}
 		random_access_iterator&			operator-=(const difference_type& n) {__current -= n; return *this;}
+
 		private:
 			value_type	__current;
 			random_access_iterator(const reference curr) : __current(curr) {}  
