@@ -20,7 +20,7 @@
 	// for (i ; i < 20; ++i) std::cout << i << std::endl;
 	// return 0;
 // }
-//* resizing vector
+// * resizing vector
 #include <iostream>
 #include <vector>
 #include "srcs/iterator.hpp"
@@ -57,13 +57,82 @@
 
 int main()
 {
-	ft::Vector<int> v(5, 18);
-	ft::Vector<int>::iterator beg = v.begin();
-	ft::Vector<int>::iterator end = v.end();
-	std::cout << v.capacity() <<std::cout;
-	std::cout << v.capacity() <<std::cout;
-	v.resize(100);
-	for(ft::Vector<int>::iterator it = beg; it != end; ++it)
-		std::cout << *it <<std::cout;
+	ft::vector<int> v(4, 18);
+	ft::vector<int>::iterator beg = v.begin();
+	ft::vector<int>::iterator end = v.end();
+	std::cout << "Capacity :" << v.capacity() <<std::endl;
+	std::cout << *beg <<std::endl;
+	end -= 1;
+	*end = 55;
+	std::cout << *end <<std::endl;
+	try
+	{
+		v.resize(v.max_size() + 1, 44);
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
+	
+	// v.resize(100, 44);
+	// std::cout << "Capacity :" << v.capacity() <<std::endl;
+	// beg = v.begin();
+	// end = v.end();
+	// std::cout << *beg <<std::endl;
+	// std::cout << *--end <<std::endl;
+	// for(ft::Vector<int>::iterator it = beg; it != end; ++it)
+	// 	std::cout << *it <<std::endl;
+	// std::cout << v.capacity() <<std::cout;
 	return(0);
 }
+// vector::empty
+// #include <iostream>
+// #include <vector>
+
+// int main ()
+// {
+//   ft::vector<int> myvector;
+//   std::cout << "the vector is " << (myvector.empty() ? "Empty" : "NOT EMPTY")<< '\n';
+// //   int sum (0);
+
+// //   for (int i=1;i<=10;i++) myvector.push_back(i);
+// 	ft::vector<int> v(4, 18);
+//   std::cout << "the vector is " << (v.empty() ? "Empty" : "NOT EMPTY")<< '\n';
+// //   while (!myvector.empty())
+// //   {
+// //      sum += myvector.back();
+// //      myvector.pop_back();
+// //   }
+// //   std::cout << "total: " << sum << '\n';
+
+//   return 0;
+// }
+// resizing vector
+
+// #include <iostream>
+// #include <vector>
+
+// int main ()
+// {
+//   std::vector<int> myvector;
+
+//   // set some initial content:
+//   for (int i=1;i<10;i++) myvector.push_back(i);
+
+//   std::cout << "Capacity :" << myvector.capacity() <<std::endl;
+//   myvector.resize(5);
+//   std::cout << "Capacity :" << myvector.capacity() <<std::endl;
+
+//   myvector.resize(8,100);
+//   std::cout << "Capacity :" << myvector.capacity() <<std::endl;
+//   myvector.resize(100);
+//   std::cout << "Capacity :" << myvector.capacity() <<std::endl;
+//   myvector.resize(5);
+//   std::cout << "Capacity :" << myvector.capacity() <<std::endl;
+
+// 	std::cout << "myvector contains:";
+// 	for (int i = 0 ; i < myvector.size(); i++)
+// 		std::cout << ' ' << myvector[i];
+// 	std::cout << '\n';
+// 	return 0;
+// }

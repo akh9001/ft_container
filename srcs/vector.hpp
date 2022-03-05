@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/05 18:14:48 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/06 00:15:13 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@
 namespace ft
 {
 	template < typename T, typename Alloc = std::allocator<T> >
-	class Vector
+	class vector
 	{
 
 		public:
@@ -58,7 +58,7 @@ namespace ft
 			//? ptrdiff_t difference_type : Difference between two pointers
 			//? std::ptrdiff_t is the signed integer type of the result of subtracting two pointers.
 			//* Member functions :
-			explicit Vector (const allocator_type& alloc = allocator_type()) : _size(), _capacity(), _alloc(alloc), _ptr()
+			explicit vector (const allocator_type& alloc = allocator_type()) : _size(), _capacity(), _alloc(alloc), _ptr()
 			{
 				// _size = 0;
 				// _capacity = 0;
@@ -66,7 +66,7 @@ namespace ft
 				// // _ptr = alloc.allocate(0);
 				// _ptr = nullptr;
 			}
-			explicit Vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
+			explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
 			{
 				//* if (n > alloc.max_size)
 				//* 	throw std::bad_alloc();
@@ -81,7 +81,7 @@ namespace ft
 					_alloc.construct(_ptr + i, val);	// _ptr[i] = val;		
 			}
 			// template <typename InIter>
-			// Vector (InIter first, InIter last, const allocator_type& alloc = allocator_type())
+			// vector (InIter first, InIter last, const allocator_type& alloc = allocator_type())
 			// {
 			// 	difference_type diff_type;
 
@@ -94,12 +94,12 @@ namespace ft
 			// 		_alloc.construct(_ptr + i, *first++);
 			// 		// _ptr[i] = *first++;
 			// }
-			Vector (const Vector& x)
+			vector (const vector& x)
 			{
 				*this = x;
 			}
 			
-			Vector& operator=(const Vector& x)
+			vector& operator=(const vector& x)
 			{
 				// if (_size)
 				// {
@@ -110,7 +110,7 @@ namespace ft
 				// }
 			}
 			
-			~Vector(void)
+			~vector(void)
 			{
 				for(int i = 0; i < _size; i++)
 					_alloc.destroy(_ptr + i); //? Calls the destructor of the object pointed to by p (Calls p->~U()).
@@ -144,8 +144,8 @@ namespace ft
 				size_type		newCapacity = n > _capacity * 2 ? n : _capacity * 2;
 				allocator_type	tmp_alloc;
 				
-				// if (n > max_size())
-				// 	throw(std::length_error());
+				if (n > max_size())
+					throw(std::length_error(std::string("length_error::length limits exceeded!")));
 				if (n < _size)
 				{
 					for(int j = n; j < _size; ++j)
@@ -175,6 +175,15 @@ namespace ft
 			}
 		// * Return size of allocated storage capacity
 			size_type capacity(void) const {return _capacity;}
+		// * Test whether vector is empty; whether its size is 0.
+		//? Return Value : true if the container size is 0, false otherwise.
+			bool empty() const { return(!_size); }
+		// // * Request a change in capacity.
+		// 	void reserve (size_type n)
+		// 	{
+		// 		if (n > _capacity)
+		// 			resize(n);
+		// 	}
 		private:
 			size_type		_size;
 			size_type		_capacity;
