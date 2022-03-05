@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 18:15:16 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/05 11:37:36 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/05 18:26:20 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ namespace ft
 		const value_type&	base(void) const{ return(__current);}
 		//! Constructors :
 		random_access_iterator(void) : __current(_Iter()) {}
-		random_access_iterator(pointer ptr) : __current(ptr) {}
+		random_access_iterator(value_type ptr) : __current(ptr) {}
 		template<typename __Iter> //! it should be a template so the instantiation of an iterator<T> with an iterator<const T> would work 
 		random_access_iterator(const random_access_iterator<__Iter> &it) {*this = it;}
 		template<typename __Iter>

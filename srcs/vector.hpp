@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/05 13:15:40 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/05 18:14:48 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,13 @@ namespace ft
 			//? ptrdiff_t difference_type : Difference between two pointers
 			//? std::ptrdiff_t is the signed integer type of the result of subtracting two pointers.
 			//* Member functions :
-			explicit Vector (const allocator_type& alloc = allocator_type())
+			explicit Vector (const allocator_type& alloc = allocator_type()) : _size(), _capacity(), _alloc(alloc), _ptr()
 			{
-				_size = 0;
-				_capacity = 0;
-				_alloc = alloc;
-				// _ptr = alloc.allocate(0);
-				_ptr = nullptr;
+				// _size = 0;
+				// _capacity = 0;
+				// _alloc = alloc;
+				// // _ptr = alloc.allocate(0);
+				// _ptr = nullptr;
 			}
 			explicit Vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
 			{
@@ -76,23 +76,24 @@ namespace ft
 				_size = n;
 				_capacity = n;
 				_alloc = alloc;
-				_ptr = alloc.allocate(n);
+				_ptr = _alloc.allocate(n);
 				for (int i = 0; i < n; i++)
-					_alloc.construct(_ptr, val);			
+					_alloc.construct(_ptr + i, val);	// _ptr[i] = val;		
 			}
-			template <typename InIter>
-			Vector (InIter first, InIter last, const allocator_type& alloc = allocator_type())
-			{
-				typename InIter::difference_type diff_type;
+			// template <typename InIter>
+			// Vector (InIter first, InIter last, const allocator_type& alloc = allocator_type())
+			// {
+			// 	difference_type diff_type;
 
-				diff_type = last - first;
-				_size = diff_type;
-				_capacity = diff_type;
-				_alloc = alloc;
-				_ptr = alloc.allocate(_capacity);
-				for(int i = 0; i < diff_type && first != last; i++)
-					_ptr[i] = *first++;
-			}
+			// 	diff_type = last - first;
+			// 	_size = diff_type;
+			// 	_capacity = diff_type;
+			// 	_alloc = alloc;
+			// 	_ptr = alloc.allocate(_capacity);
+			// 	for(int i = 0; i < diff_type && first != last; i++)
+			// 		_alloc.construct(_ptr + i, *first++);
+			// 		// _ptr[i] = *first++;
+			// }
 			Vector (const Vector& x)
 			{
 				*this = x;
@@ -126,7 +127,7 @@ namespace ft
 			const_iterator end() const { return iterator(_ptr + _size);}
 		//* Returns a reverse iterator pointing to the last element in the vector.
 			reverse_iterator rbegin() {return (reverse_iterator(end()));}
-			const_reverse_iterator rbegin() const {reverse_iterator(end()));}
+			const_reverse_iterator rbegin() const {reverse_iterator(end());}
 		//* Returns a reverse iterator pointing to the theoretical element preceding the first element in the vector.
 			reverse_iterator rend(){ return(reverse_iterator(begin()));}
 			const_reverse_iterator rend() const{ return(reverse_iterator(begin()));}
@@ -140,9 +141,11 @@ namespace ft
 			{
 				int				i = 0;
 				pointer			tmp = _ptr;
-				size_type		numElToadd = n - _size;
+				size_type		newCapacity = n > _capacity * 2 ? n : _capacity * 2;
 				allocator_type	tmp_alloc;
 				
+				// if (n > max_size())
+				// 	throw(std::length_error());
 				if (n < _size)
 				{
 					for(int j = n; j < _size; ++j)
@@ -152,12 +155,12 @@ namespace ft
 				{
 					if (n > _capacity)
 					{
-						tmp = tmp_alloc.allocate(_capacity * 2);
-						for(i; i < _size; ++i)
-							tmp[i] = _ptr[i];
+						tmp = tmp_alloc.allocate(newCapacity);
+						for(i = 0; i < _size; ++i)
+							tmp[i] = _ptr[i]; //* may be yo should use allocator::construct.
 					}
-					for(i; i < numElToadd; ++i)
-						tmp[i] = val;
+					for(i = _size; i < n; ++i)
+						tmp[i] = val; //* may be yo should use allocator::construct.
 					if (n > _capacity)
 					{
 						for(int j = 0; j < _size; ++j)
@@ -165,12 +168,13 @@ namespace ft
 						_alloc.deallocate(_ptr, _capacity);
 						_ptr = tmp;
 						_alloc = tmp_alloc;
-						_capacity *= 2;
+						_capacity = newCapacity;
 					}
 				}
 				_size = n;
 			}
-
+		// * Return size of allocated storage capacity
+			size_type capacity(void) const {return _capacity;}
 		private:
 			size_type		_size;
 			size_type		_capacity;
