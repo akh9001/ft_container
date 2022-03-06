@@ -23,8 +23,8 @@
 // * resizing vector
 #include <iostream>
 #include <vector>
-#include "srcs/iterator.hpp"
-#include "srcs/vector.hpp"
+// #include "srcs/iterator.hpp"
+// #include "srcs/vector.hpp"
 // int main ()
 // {
 // //   std::vector<int> myvector;
@@ -57,22 +57,30 @@
 
 int main()
 {
-	ft::vector<int> v(4, 18);
-	ft::vector<int>::iterator beg = v.begin();
-	ft::vector<int>::iterator end = v.end();
-	std::cout << "Capacity :" << v.capacity() <<std::endl;
-	std::cout << *beg <<std::endl;
-	end -= 1;
-	*end = 55;
-	std::cout << *end <<std::endl;
-	try
-	{
-		v.resize(v.max_size() + 1, 44);
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << '\n';
-	}
+
+	std::vector<const int> v(10,4);
+	// std::vector<const int>::iterator it(v.begin());
+	v.resize(4);
+	std::cout << v[0] << std::endl;
+
+
+
+	// ft::vector<int> v(4, 18);
+	// ft::vector<int>::iterator beg = v.begin();
+	// ft::vector<int>::iterator end = v.end();
+	// std::cout << "Capacity :" << v.capacity() <<std::endl;
+	// std::cout << *beg <<std::endl;
+	// end -= 1;
+	// *end = 55;
+	// std::cout << *end <<std::endl;
+	// try
+	// {
+	// 	v.resize(v.max_size() + 1, 44);
+	// }
+	// catch(const std::exception& e)
+	// {
+	// 	std::cerr << e.what() << '\n';
+	// }
 	
 	// v.resize(100, 44);
 	// std::cout << "Capacity :" << v.capacity() <<std::endl;

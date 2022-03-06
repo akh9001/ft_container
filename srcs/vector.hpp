@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/06 00:15:13 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/06 02:00:49 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,10 +157,10 @@ namespace ft
 					{
 						tmp = tmp_alloc.allocate(newCapacity);
 						for(i = 0; i < _size; ++i)
-							tmp[i] = _ptr[i]; //* may be yo should use allocator::construct.
+							_alloc.construct(&tmp[i],_ptr[i]);//tmp[i] = _ptr[i]; //* may be yo should use allocator::construct.
 					}
 					for(i = _size; i < n; ++i)
-						tmp[i] = val; //* may be yo should use allocator::construct.
+						_alloc.construct(&tmp[i],val);//tmp[i] = val; //* may be yo should use allocator::construct.
 					if (n > _capacity)
 					{
 						for(int j = 0; j < _size; ++j)
@@ -178,12 +178,14 @@ namespace ft
 		// * Test whether vector is empty; whether its size is 0.
 		//? Return Value : true if the container size is 0, false otherwise.
 			bool empty() const { return(!_size); }
-		// // * Request a change in capacity.
-		// 	void reserve (size_type n)
-		// 	{
-		// 		if (n > _capacity)
-		// 			resize(n);
-		// 	}
+		// * Request a change in capacity.
+			// void reserve (size_type n)
+			// {
+			// 	if (n > _capacity)
+			// 	{
+					
+			// 	}
+			// }
 		private:
 			size_type		_size;
 			size_type		_capacity;
