@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/06 02:00:49 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/08 06:45:09 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,23 @@
 #include <vector>
 #include <iterator>
 #include "iterator.hpp"
+#define RESET   "\033[0m"
+#define BLACK   "\033[30m"      /* Black */
+#define RED     "\033[31m"      /* Red */
+#define GREEN   "\033[32m"      /* Green */
+#define YELLOW  "\033[33m"      /* Yellow */
+#define BLUE    "\033[34m"      /* Blue */
+#define MAGENTA "\033[35m"      /* Magenta */
+#define CYAN    "\033[36m"      /* Cyan */
+#define WHITE   "\033[37m"      /* White */
+#define BOLDBLACK   "\033[1m\033[30m"      /* Bold Black */
+#define BOLDRED     "\033[1m\033[31m"      /* Bold Red */
+#define BOLDGREEN   "\033[1m\033[32m"      /* Bold Green */
+#define BOLDYELLOW  "\033[1m\033[33m"      /* Bold Yellow */
+#define BOLDBLUE    "\033[1m\033[34m"      /* Bold Blue */
+#define BOLDMAGENTA "\033[1m\033[35m"      /* Bold Magenta */
+#define BOLDCYAN    "\033[1m\033[36m"      /* Bold Cyan */
+#define BOLDWHITE   "\033[1m\033[37m"      /* Bold White */
 
 /*
  *jlkll
@@ -145,7 +162,7 @@ namespace ft
 				allocator_type	tmp_alloc;
 				
 				if (n > max_size())
-					throw(std::length_error(std::string("length_error::length limits exceeded!")));
+					throw(std::length_error(std::string("vector::resize")));
 				if (n < _size)
 				{
 					for(int j = n; j < _size; ++j)
@@ -179,12 +196,121 @@ namespace ft
 		//? Return Value : true if the container size is 0, false otherwise.
 			bool empty() const { return(!_size); }
 		// * Request a change in capacity.
-			// void reserve (size_type n)
+		//? method only allocates memory, but leaves it uninitialized. It only affects capacity(), but size() will be unchanged.
+			void reserve (size_type n)
+			{
+				pointer			tmp;
+				allocator_type	tmp_alloc;
+
+				if (n > max_size())
+					throw(std::length_error(std::string("vector::reserve")));
+				if (n > _capacity)
+				{
+					tmp = tmp_alloc.allocate(n);
+					for(int i = 0; i < _size; ++i)
+					{
+						_alloc.construct(&tmp[i],_ptr[i]);
+						_alloc.destroy(_ptr + i);			
+					}
+					_alloc.deallocate(_ptr, _capacity);
+					_ptr = tmp;
+					_alloc = tmp_alloc;
+					_capacity = n;
+				}
+			}
+		//! Element access:
+		// * Returns a reference to the element at position n in the vector container.
+			reference operator[] (size_type n) { return _ptr[n];}
+			const_reference operator[] (size_type n) const { return _ptr[n];}
+		// * Returns a reference to the element at position n in the vector.
+      		reference at(size_type n)
+			{
+				if (n >= _size)
+					throw(std::out_of_range(std::string("vector::at")));
+				return _ptr[n];
+			}
+			const_reference at (size_type n) const
+			{
+				if (n >= _size)
+					throw(std::out_of_range(std::string("vector::at")));
+				return _ptr[n];
+			}
+		// * Returns a reference to the first element in the vector.
+			reference front() {return _ptr[0];}
+			const_reference front() const {return _ptr[0];}
+		// * Returns a reference to the last element in the vector.
+			reference back() {return _ptr[_size - 1];}
+			const_reference back() const {return _ptr[_size - 1];}
+	// TODO : assign
+		// ! Modifiers:
+		// * Assigns new contents to the vector, replacing its current contents, and modifying its size accordingly.
+			template <class InputIterator>
+			void assign (InputIterator first, InputIterator last);
+			void assign (size_type n, const value_type& val);
+		// * Adds a new element at the end of the vector, after its current last element.
+			//? How cute (^__^)!
+			void push_back (const value_type& val)
+			{
+				resize(_size + 1, val);
+			}
+		// * Removes the last element in the vector, effectively reducing the container size by one.
+			void pop_back(void)
+			{
+				_alloc.destroy(_ptr + (--_size));
+				// _alloc.destroy(_ptr + (_size - 1));
+				// _size -= 1;
+			}
+		// * Removes from the vector either a single element (position) or a range of elements ([first,last)).
+			iterator erase (iterator position)
+			{
+				// size_type	start = position - this->begin();
+				
+				// for(size_type i = start; i < _size - 1 ; ++i)
+				// 	_ptr[i] = _ptr[i + 1];
+				// pop_back();
+				// return(position);
+				return(erase(position, position + 1));
+			}
+			
+			iterator erase (iterator first, iterator last)
+			{
+				size_type	start = first - this->begin();
+				size_type	end = last - this->begin();
+				size_type	n = last - first;
+
+				std::cout << BOLDMAGENTA << "start = " << start << " end = " << end << " n = " << n << WHITE << std::endl;
+				for(size_type i = 0; i <= _size ; ++i)
+					_ptr[start + i] = _ptr[end + i];
+				for(size_type i = 0; i < n ; ++i)
+					pop_back();
+				return(last);
+				
+				// pointer			tmp;
+				// size_type		begin = first - this->begin();
+				// size_type		end = last - this->begin();
+				// allocator_type	tmp_alloc;
+				// size_type		n = _size - (last - first);
+				
+				// tmp = tmp_alloc.allocate(_capacity);
+				// for(size_type i = 0; i < _size ; ++i)
+				// {
+				// 	if (i >= begin && i < end)
+				// 		_alloc.destroy(_ptr + i);
+				// 	else
+				// 	{
+				// 		_alloc.construct(&tmp[i],_ptr[i]);
+				// 		_alloc.destroy(_ptr + i);
+				// 	}
+				// }
+				// _alloc.deallocate(_ptr, _capacity);
+				// _ptr = tmp;
+				// _alloc = tmp_alloc;
+				// _size = n;
+			}
+		// * 
+			// void clear()
 			// {
-			// 	if (n > _capacity)
-			// 	{
-					
-			// 	}
+				
 			// }
 		private:
 			size_type		_size;
