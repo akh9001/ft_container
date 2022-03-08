@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/08 06:45:09 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/08 10:41:51 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,40 +278,29 @@ namespace ft
 				size_type	end = last - this->begin();
 				size_type	n = last - first;
 
-				std::cout << BOLDMAGENTA << "start = " << start << " end = " << end << " n = " << n << WHITE << std::endl;
 				for(size_type i = 0; i <= _size ; ++i)
 					_ptr[start + i] = _ptr[end + i];
 				for(size_type i = 0; i < n ; ++i)
 					pop_back();
 				return(last);
-				
-				// pointer			tmp;
-				// size_type		begin = first - this->begin();
-				// size_type		end = last - this->begin();
-				// allocator_type	tmp_alloc;
-				// size_type		n = _size - (last - first);
-				
-				// tmp = tmp_alloc.allocate(_capacity);
-				// for(size_type i = 0; i < _size ; ++i)
-				// {
-				// 	if (i >= begin && i < end)
-				// 		_alloc.destroy(_ptr + i);
-				// 	else
-				// 	{
-				// 		_alloc.construct(&tmp[i],_ptr[i]);
-				// 		_alloc.destroy(_ptr + i);
-				// 	}
-				// }
-				// _alloc.deallocate(_ptr, _capacity);
-				// _ptr = tmp;
-				// _alloc = tmp_alloc;
-				// _size = n;
 			}
-		// * 
-			// void clear()
-			// {
-				
-			// }
+		// * Exchanges the content of the container by the content of x, which is another vector object of the same type. Sizes may differ.
+			void swap (vector& x)
+			{
+				std::swap(_size, x._size);
+				std::swap(_capacity, x._capacity);
+				std::swap(_alloc, x._alloc);
+				std::swap(_ptr, x._ptr);
+			}
+		
+		// * Removes all elements from the vector (which are destroyed), leaving the container with a size of 0.
+			void clear(void)
+			{
+				erase(this->begin(), this->end());
+			}
+		// ! Allocator:
+		// * Returns a copy of the allocator object associated with the vector.
+			allocator_type get_allocator(void) const { return _alloc;}
 		private:
 			size_type		_size;
 			size_type		_capacity;
