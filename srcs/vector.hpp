@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/08 10:41:51 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/11 20:03:37 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <vector>
 #include <iterator>
 #include "iterator.hpp"
+#include "enable_if.hpp"
 #define RESET   "\033[0m"
 #define BLACK   "\033[30m"      /* Black */
 #define RED     "\033[31m"      /* Red */
@@ -97,35 +98,35 @@ namespace ft
 				for (int i = 0; i < n; i++)
 					_alloc.construct(_ptr + i, val);	// _ptr[i] = val;		
 			}
-			// template <typename InIter>
-			// vector (InIter first, InIter last, const allocator_type& alloc = allocator_type())
-			// {
-			// 	difference_type diff_type;
+			 template <typename InIter>//, std::enable_if<!std::is_integral<InIter>::value>::type>
+			vector (InIter first, InIter last, const allocator_type& alloc = allocator_type(), typename std::enable_if<!std::is_integral<InIter>::value>::type = false)
+			{
+				difference_type diff_type;
 
-			// 	diff_type = last - first;
-			// 	_size = diff_type;
-			// 	_capacity = diff_type;
-			// 	_alloc = alloc;
-			// 	_ptr = alloc.allocate(_capacity);
-			// 	for(int i = 0; i < diff_type && first != last; i++)
-			// 		_alloc.construct(_ptr + i, *first++);
-			// 		// _ptr[i] = *first++;
+				diff_type = std::distance(last, first);
+				_size = diff_type;
+				_capacity = diff_type;
+				_alloc = alloc;
+				_ptr = _alloc.allocate(_capacity);
+				for(difference_type i = 0; i < diff_type && first != last; i++)
+					_alloc.construct(_ptr + i, *first++);
+					// _ptr[i] = *first++;
+			}
+			// vector (const vector& x)
+			// {
+			// 	*this = x;
 			// }
-			vector (const vector& x)
-			{
-				*this = x;
-			}
 			
-			vector& operator=(const vector& x)
-			{
-				// if (_size)
-				// {
-				// 	_size = x.;
-				// 	_capacity = diff_type;
-				// 	_alloc = alloc;
-				// 	_ptr = alloc.allocate(_capacity);
-				// }
-			}
+			// vector& operator=(const vector& x)
+			// {
+			// 	// if (_size)
+			// 	// {
+			// 	// 	_size = x.;
+			// 	// 	_capacity = diff_type;
+			// 	// 	_alloc = alloc;
+			// 	// 	_ptr = alloc.allocate(_capacity);
+			// 	// }
+			// }
 			
 			~vector(void)
 			{
@@ -260,6 +261,14 @@ namespace ft
 				// _alloc.destroy(_ptr + (_size - 1));
 				// _size -= 1;
 			}
+		// * The vector is extended by inserting new elements before the element at the specified position, effectively increasing the container size by the number of elements inserted.
+		// ? Single element :
+		
+			iterator insert (iterator position, const value_type& val)
+			{
+				
+			}
+			
 		// * Removes from the vector either a single element (position) or a range of elements ([first,last)).
 			iterator erase (iterator position)
 			{
