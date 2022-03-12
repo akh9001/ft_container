@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/12 03:45:48 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/12 06:56:36 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,46 +79,44 @@ namespace ft
 			//* Member functions :
 			explicit vector (const allocator_type& alloc = allocator_type()) : _size(), _capacity(), _alloc(alloc), _ptr()
 			{
-				// _size = 0;
-				// _capacity = 0;
-				// _alloc = alloc;
-				// // _ptr = alloc.allocate(0);
-				// _ptr = nullptr;
 			}
 			explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
 			{
-				//* if (n > alloc.max_size)
-				//* 	throw std::bad_alloc();
-				// pointer = alloc.allocate(n);
-				// for (int i = 0; i < n; i++)
-				// 	pointer[i] = val;
+				if (n > alloc.max_size())
+					throw std::bad_alloc();
 				_size = n;
 				_capacity = n;
 				_alloc = alloc;
 				_ptr = _alloc.allocate(n);
 				for (int i = 0; i < n; i++)
-					_alloc.construct(_ptr + i, val);	// _ptr[i] = val;		
+					_alloc.construct(_ptr + i, val);	
 			}
 			template <typename InIter> 
-			vector (InIter first, typename ft::enable_if<!ft::is_integral<InIter>::value, InIter>::type  last, const allocator_type& alloc = allocator_type()) : _size(), _capacity(), _alloc(alloc), _ptr()
+			vector (InIter first, typename ft::enable_if<!ft::is_integral<InIter>::value, InIter>::type last, const allocator_type& alloc = allocator_type())
+				: _size(), _capacity(), _alloc(alloc), _ptr()
 			{
 				contructor_range(first, last, typename std::iterator_traits<InIter>::iterator_category());
 			}
-			// vector (const vector& x)
-			// {
-			// 	*this = x;
-			// }
+			vector (const vector& x)
+			{
+				*this = x;
+			}
 			
-			// vector& operator=(const vector& x)
-			// {
-			// 	// if (_size)
-			// 	// {
-			// 	// 	_size = x.;
-			// 	// 	_capacity = diff_type;
-			// 	// 	_alloc = alloc;
-			// 	// 	_ptr = alloc.allocate(_capacity);
-			// 	// }
-			// }
+			vector& operator=(const vector& x)
+			{
+				if (this == &x)
+					return (*this);
+				for(int j = 0; j < _size; ++j)
+					_alloc.destroy(_ptr + j);
+				if (_capacity)
+					_alloc.deallocate(_ptr, _capacity);
+				_size = x._size;
+				_capacity = x._capacity;
+				_alloc = allocator_type();
+				_ptr = alloc.allocate(_capacity);
+				for(int j = 0; j < _size; ++j)
+					_alloc.construct(&_ptr[j],x._ptr[j]);
+			}
 		// !Destructor:
 			~vector(void)
 			{
