@@ -498,6 +498,7 @@ void algorithm(T t)
     else
         static_assert(std::is_signed<T>::value || std::is_unsigned<T>::value, "Must be signed or unsigned!");
 }
+#include <iostream>
 int main ()
 {
 	// std::list<int> li(4, 100);
@@ -507,9 +508,37 @@ int main ()
 	// int yes = 11;
 	// comp(11);
 	// write_vector(v);
-	ft::vector<int> myvector (10,100);
-	 ft::vector<int>::iterator it;
-	ft::vector<int> myvec ( myvector.begin(), myvector.begin() + 2);
+	//  try {
+
+	// {
+	// 	ft::vector<int> myvector (3,100);
+	// 	myvector.push_back(42);
+	// 	ft::vector<int>::iterator it;
+	// 	ft::vector<int> myvec ( myvector.begin()+3, myvector.begin() + 4);
+	// 	std::cout << "myvector contains:";
+	// 	for (it=myvector.begin(); it != myvector.end(); it++)
+	// 	std::cout << ' ' << *it;
+	// 	std::cout << '\n';
+	// 	std::cout << "myvector contains:";
+	// 	for (it=myvec.begin(); it != myvec.end(); it++)
+	// 	std::cout << ' ' << *it;
+	// 	std::cout << '\n';
+	// }
+	{
+		std::istream_iterator<int> start(std::cin);
+		std::istream_iterator<int> end;
+
+		const ft::vector<int> v(start, end);
+
+		for (size_t i = 0; i < v.size(); i++)
+			std::cout << v[i] << ' ';
+		std::cout << std::endl;
+	}
+	//  }
+	//  catch (std::exception e)
+	//  {
+	// 	 std::cout << e.what() << std::endl;
+	//  }
 	
 	// it = myvector.begin();
 	// it = myvector.insert ( it , 200 );
@@ -525,10 +554,6 @@ int main ()
 	// int myarray [] = { 501,502,503 };
 	// myvector.insert (myvector.begin(), myarray, myarray+3);
 	
-	// std::cout << "myvector contains:";
-	for (it=myvector.begin(); it != myvector.end(); it++)
-	  std::cout << ' ' << *it;
-	// std::cout << '\n';
 	// {
 	// 	algorithm(3);       // T is int, include algorithm_signed()
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elona <elona@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/11 20:03:37 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/11 23:24:36 by elona            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,18 +98,21 @@ namespace ft
 				for (int i = 0; i < n; i++)
 					_alloc.construct(_ptr + i, val);	// _ptr[i] = val;		
 			}
-			 template <typename InIter>//, std::enable_if<!std::is_integral<InIter>::value>::type>
-			vector (InIter first, InIter last, const allocator_type& alloc = allocator_type(), typename std::enable_if<!std::is_integral<InIter>::value>::type = false)
+			 template <typename InIter>
+			 vector (InIter first, typename ft::enable_if<!ft::is_integral<InIter>::value, InIter>::type  last, const allocator_type& alloc = allocator_type())
 			{
 				difference_type diff_type;
 
-				diff_type = std::distance(last, first);
+				diff_type = std::distance(first, last);
 				_size = diff_type;
 				_capacity = diff_type;
 				_alloc = alloc;
 				_ptr = _alloc.allocate(_capacity);
 				for(difference_type i = 0; i < diff_type && first != last; i++)
+				{
 					_alloc.construct(_ptr + i, *first++);
+					// first++;
+				}
 					// _ptr[i] = *first++;
 			}
 			// vector (const vector& x)
