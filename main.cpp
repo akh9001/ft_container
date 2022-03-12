@@ -527,7 +527,7 @@ int main ()
 	{
 		std::istream_iterator<int> start(std::cin);
 		std::istream_iterator<int> end;
-
+		
 		const ft::vector<int> v(start, end);
 
 		for (size_t i = 0; i < v.size(); i++)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elona <elona@student.42.fr>                +#+  +:+       +#+        */
+/*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/11 23:24:36 by elona            ###   ########.fr       */
+/*   Updated: 2022/03/12 03:45:48 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ namespace ft
 			typedef	std::size_t												size_type;
 			//? ptrdiff_t difference_type : Difference between two pointers
 			//? std::ptrdiff_t is the signed integer type of the result of subtracting two pointers.
+			//! Constructors:
 			//* Member functions :
 			explicit vector (const allocator_type& alloc = allocator_type()) : _size(), _capacity(), _alloc(alloc), _ptr()
 			{
@@ -98,22 +99,10 @@ namespace ft
 				for (int i = 0; i < n; i++)
 					_alloc.construct(_ptr + i, val);	// _ptr[i] = val;		
 			}
-			 template <typename InIter>
-			 vector (InIter first, typename ft::enable_if<!ft::is_integral<InIter>::value, InIter>::type  last, const allocator_type& alloc = allocator_type())
+			template <typename InIter> 
+			vector (InIter first, typename ft::enable_if<!ft::is_integral<InIter>::value, InIter>::type  last, const allocator_type& alloc = allocator_type()) : _size(), _capacity(), _alloc(alloc), _ptr()
 			{
-				difference_type diff_type;
-
-				diff_type = std::distance(first, last);
-				_size = diff_type;
-				_capacity = diff_type;
-				_alloc = alloc;
-				_ptr = _alloc.allocate(_capacity);
-				for(difference_type i = 0; i < diff_type && first != last; i++)
-				{
-					_alloc.construct(_ptr + i, *first++);
-					// first++;
-				}
-					// _ptr[i] = *first++;
+				contructor_range(first, last, typename std::iterator_traits<InIter>::iterator_category());
 			}
 			// vector (const vector& x)
 			// {
@@ -130,7 +119,7 @@ namespace ft
 			// 	// 	_ptr = alloc.allocate(_capacity);
 			// 	// }
 			// }
-			
+		// !Destructor:
 			~vector(void)
 			{
 				for(int i = 0; i < _size; i++)
@@ -313,6 +302,25 @@ namespace ft
 		// ! Allocator:
 		// * Returns a copy of the allocator object associated with the vector.
 			allocator_type get_allocator(void) const { return _alloc;}
+		private:
+			template <typename InIter>
+			void			contructor_range(InIter first, InIter  last, const std::forward_iterator_tag&)
+			{
+				difference_type diff_type;
+
+				diff_type = std::distance(first, last);
+				_size = diff_type;
+				_capacity = diff_type;
+				_ptr = _alloc.allocate(_capacity);
+				for(difference_type i = 0; i < diff_type && first != last; i++)
+					_alloc.construct(_ptr + i, *first++);
+			}
+			template <typename InIter>
+			void			contructor_range(InIter first, InIter  last, const std::input_iterator_tag&)
+			{
+				while(first != last)
+					push_back(*first++);
+			}
 		private:
 			size_type		_size;
 			size_type		_capacity;
