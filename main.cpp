@@ -483,22 +483,51 @@ void comp(char notnum)
 // {
 // 	comp(this->iterator::iterator_category);
 // }
-void algorithm_signed  (int i) { std::cout << "T is int, include algorithm_signed()" << std::endl; } 
+// void algorithm_signed  (int i) { std::cout << "T is int, include algorithm_signed()" << std::endl; } 
 
-void algorithm_unsigned(unsigned u) { std::cout << "T is unsigned int, include algorithm_unsigned()" << std::endl; } 
+// void algorithm_unsigned(unsigned u) { std::cout << "T is unsigned int, include algorithm_unsigned()" << std::endl; } 
 
-template <typename T>
-void algorithm(T t)
-{
-    if (std::is_signed<T>::value)
-        algorithm_signed(t);
-    else
-    if (std::is_unsigned<T>::value)
-        algorithm_unsigned(t);
-    else
-        static_assert(std::is_signed<T>::value || std::is_unsigned<T>::value, "Must be signed or unsigned!");
-}
+// template <typename T>
+// void algorithm(T t)
+// {
+//     if (std::is_signed<T>::value)
+//         algorithm_signed(t);
+//     else
+//     if (std::is_unsigned<T>::value)
+//         algorithm_unsigned(t);
+//     else
+//         static_assert(std::is_signed<T>::value || std::is_unsigned<T>::value, "Must be signed or unsigned!");
+// }
 #include <iostream>
+
+class A
+{
+	static int count;
+	public :
+	int			_pos;
+	A(int n): _pos(n){count++; std::cout << "A::constructor." << std::endl;}
+	A(const A& arg)
+	{
+		_pos = arg._pos;
+		count++;
+		std::cout << "A::COPY " << _pos << std::endl;
+	}
+	A& operator=(const A& src)
+	{
+		_pos = src._pos;
+		count++;
+		std::cout << "A::Assign " << _pos << std::endl;
+		return *this;
+	}
+	~A(){count = 0; std::cout << _pos << " A::destructor." << std::endl;}
+
+};
+std::ostream& operator<<(std::ostream& os, const A& dt)
+{
+	os << dt._pos;
+	return os;
+}
+int A::count = 0;
 int main ()
 {
 	// std::list<int> li(4, 100);
@@ -524,15 +553,123 @@ int main ()
 	// 	std::cout << ' ' << *it;
 	// 	std::cout << '\n';
 	// }
-	{
-		std::istream_iterator<int> start(std::cin);
-		std::istream_iterator<int> end;
+	//* constructor
+	// {
+	// 	std::istream_iterator<int> start(std::cin);
+	// 	std::istream_iterator<int> end;
 		
-		const ft::vector<int> v(start, end);
+	// 	const ft::vector<int> v(start, end);
 
-		for (size_t i = 0; i < v.size(); i++)
-			std::cout << v[i] << ' ';
-		std::cout << std::endl;
+	// 	for (size_t i = 0; i < v.size(); i++)
+	// 		std::cout << v[i] << ' ';
+	// 	std::cout << std::endl;
+	// }
+	{
+	// *vector assign
+
+	// 	std::vector<int> first;
+	// 	std::vector<int>::iterator it;
+	// 	std::vector<int> second;
+	// 	std::vector<int> third;
+
+	// first.assign (7,100);             // 7 ints with a value of 100
+	// 	std::cout << "myvector contains:";
+	// 	for (it= first.begin(); it != first.end(); it++)
+	// 		std::cout << ' ' << *it;
+	// 	std::cout << "\n Capacity : " << first.capacity() << ", Size : " << first.size() << '\n';
+	// first.assign (9,12);             // 7 ints with a value of 100
+	// 	std::cout << "myvector contains:";
+	// 	for (it= first.begin(); it != first.end(); it++)
+	// 		std::cout << ' ' << *it;
+	// 	std::cout << "\n Capacity : " << first.capacity() << ", Size : " << first.size() << '\n';
+	// first.assign (2,42);             // 7 ints with a value of 100
+	// 	std::cout << "myvector contains:";
+	// 	for (it= first.begin(); it != first.end(); it++)
+	// 		std::cout << ' ' << *it;
+	// 	std::cout << "\n Capacity : " << first.capacity() << ", Size : " << first.size() << '\n';
+	// 	it=first.begin()+1;
+
+	// 	second.assign (first.begin(),first.end()-1); // the 5 central values of first
+
+	// 	int myints[] = {1776,7,4};
+	// 	third.assign (myints,myints+3);   // assigning from array.
+
+	// 	std::cout << std::endl << "Size of first: " << int (first.size()) << '\n';
+	// 	std::cout << "Size of second: " << int (second.size()) << '\n';
+	// 	for (it= second.begin(); it != second.end(); it++)
+	// 		std::cout << ' ' << *it;
+	// 	std::cout << std::endl << "Size of third: " << int (third.size()) << '\n';
+	// 	for (it= third.begin(); it != third.end(); it++)
+	// 		std::cout << ' ' << *it;
+
+		//*Does the object get destructed when they are replaced on vector;
+		// std::vector<A> T;
+		// //T.reserve(5);
+		// A a1(1), a2(2), a3(3);
+		// T.push_back(a1);
+		// std::cout << GREEN << "chi7aja" << std::endl;
+		// T.push_back(a2);
+		// std::cout << GREEN << "chi7aja" << std::endl;
+		// T.push_back(a3);
+
+		// for (int i = 0; i < T.size(); i++)
+		// 	std::cout << GREEN << T[i]._pos << std::endl;
+		// std::cout << RESET ;
+		// T.assign(5, a3);
+		// for (int i = 0; i < T.size(); i++)
+		// 	std::cout << GREEN << T[i]._pos << std::endl;
+		// std::cout << RESET ;
+	}
+	{
+	// *inserting into a vector
+		// std::vector<A> myvector (5,100);
+		// myvector.reserve(10);
+		// std::cout << "------\n\n"; 
+		// ft::vector<A>::iterator it;
+		ft::vector<int> myvector (3,100);
+		ft::vector<int>::iterator it;
+
+		it = myvector.begin();
+		it = myvector.insert ( it , 200 );
+		std::cout << "it " << *it << std::endl;
+		std::cout << myvector.capacity() <<'\n';
+
+		myvector.insert (it,2,300);
+		std::cout << "it " << *it << std::endl;
+		for (it=myvector.begin(); it<myvector.end(); it++)
+			std::cout << ' ' << *it;
+		std::cout << '\n';
+		// it = myvector.begin();
+		// it = myvector.insert(it , 300 );
+		// std::cout << myvector.capacity() <<'\n';
+		// std::cout << GREEN << *it << RESET << std::endl;
+		// std::cout << "---------------------------\n\n"; 
+		// std::cout << "myvector contains:";
+		// for (it=myvector.begin(); it<myvector.end(); it++)
+		// 	std::cout << ' ' << *it;
+		// std::cout << '\n';
+		// std::cout << myvector.capacity() <<'\n';
+		// std::cout << "---------------------------\n\n"; 
+		// it = myvector.insert ( myvector.end() - 2, 200 );
+		// std::cout << GREEN << *it << RESET << std::endl;
+
+		// myvector.insert (it,2,300);
+
+		// // "it" no longer valid, get a new one:
+		// it = myvector.begin();
+
+		// std::vector<int> anothervector (2,400);
+		// myvector.insert (it+2,anothervector.begin(),anothervector.end());
+
+		// int myarray [] = { 501,502,503 };
+		// myvector.insert (myvector.begin(), myarray, myarray+3);
+
+		std::cout << "myvector contains:";
+		for (it=myvector.begin(); it<myvector.end(); it++)
+			std::cout << ' ' << *it;
+		std::cout << '\n';
+		std::cout << myvector.capacity() <<'\n';
+
 	}
 	//  }
 	//  catch (std::exception e)

@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/12 06:56:36 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/13 05:58:57 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <iterator>
 #include "iterator.hpp"
 #include "enable_if.hpp"
+#include "my_type_traits.hpp"
 #define RESET   "\033[0m"
 #define BLACK   "\033[30m"      /* Black */
 #define RED     "\033[31m"      /* Red */
@@ -113,7 +114,7 @@ namespace ft
 				_size = x._size;
 				_capacity = x._capacity;
 				_alloc = allocator_type();
-				_ptr = alloc.allocate(_capacity);
+				_ptr = _alloc.allocate(_capacity);
 				for(int j = 0; j < _size; ++j)
 					_alloc.construct(&_ptr[j],x._ptr[j]);
 			}
@@ -199,10 +200,9 @@ namespace ft
 				{
 					tmp = tmp_alloc.allocate(n);
 					for(int i = 0; i < _size; ++i)
-					{
 						_alloc.construct(&tmp[i],_ptr[i]);
-						_alloc.destroy(_ptr + i);			
-					}
+					for(int i = 0; i < _size; ++i)
+						_alloc.destroy(_ptr + i);		
 					_alloc.deallocate(_ptr, _capacity);
 					_ptr = tmp;
 					_alloc = tmp_alloc;
@@ -236,8 +236,33 @@ namespace ft
 		// ! Modifiers:
 		// * Assigns new contents to the vector, replacing its current contents, and modifying its size accordingly.
 			template <class InputIterator>
-			void assign (InputIterator first, InputIterator last);
-			void assign (size_type n, const value_type& val);
+			void assign (typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last)
+			{
+				size_type	i;
+				
+				for(i = 0; i < _size; i++)
+					_alloc.destroy(_ptr + i);
+				_size = 0;
+				do_assign(first, last, typename std::iterator_traits<InputIterator>::iterator_category());
+			}
+			void assign (size_type n, const value_type& val)
+			{
+				size_type	i;
+
+				if (n > max_size())
+					throw(std::length_error(std::string("vector::assign")));
+				for(i = 0; i < _size; i++)
+					_alloc.destroy(_ptr + i);
+				if (n > _capacity)
+				{
+					_alloc.deallocate(_ptr, _capacity);
+					_ptr = _alloc.allocate(n);
+					_capacity = n;
+				}
+				for (i = 0; i < n; i++)
+					_alloc.construct(&_ptr[i],val);
+				_size = n;
+			}
 		// * Adds a new element at the end of the vector, after its current last element.
 			//? How cute (^__^)!
 			void push_back (const value_type& val)
@@ -256,7 +281,42 @@ namespace ft
 		
 			iterator insert (iterator position, const value_type& val)
 			{
+				difference_type	diff = ft::distance(position, this->begin());
+				insert(position, 1, val);
+				// std::cout << GREEN << "Hamida " << *position << RESET << std::endl;
+				return (this->begin() + diff);
+			}
+		// ? fill
+			void insert (iterator position, size_type n, const value_type& val)
+			{
+				size_type	newSize = n + _size;
+				size_type	newCapacity = newSize < (2 * _capacity ) ? (2 * _capacity ): newSize;
+				size_type	firstPosition = std::distance(this->begin(), position);
+				size_type	lastPosition = firstPosition + n;
+				size_type	i;
+
+				// if (newSize > max_size())
+				// 	throw(std::length_error(std::string("vector::insert")));
 				
+				reserve(newSize > _capacity ? newCapacity : newSize);
+				// if (newSize <= _capacity)
+				// {
+					std::cout << "Last position = " << lastPosition << " ,First position = " << firstPosition << "\nnewSize = " << newSize << ", capacity = " << _capacity << std::endl;
+					for(i = newSize - 1; i >= lastPosition; i--)
+					{
+						_ptr[i] = _ptr[i - 1];
+					}
+					for (i = lastPosition; i > firstPosition; i--)
+					{
+						std::cout << CYAN << "index = " << i << " " << _ptr[i] << RESET<< std::endl;
+						_ptr[i - 1 ] = val;
+					}
+					_size = newSize;
+				// }
+				// else
+				// {
+				// 	reserve(newCapacity);
+				// }
 			}
 			
 		// * Removes from the vector either a single element (position) or a range of elements ([first,last)).
@@ -300,9 +360,10 @@ namespace ft
 		// ! Allocator:
 		// * Returns a copy of the allocator object associated with the vector.
 			allocator_type get_allocator(void) const { return _alloc;}
+		//! Help functions:
 		private:
 			template <typename InIter>
-			void			contructor_range(InIter first, InIter  last, const std::forward_iterator_tag&)
+			void	contructor_range(InIter first, InIter  last, const std::forward_iterator_tag&)
 			{
 				difference_type diff_type;
 
@@ -315,6 +376,29 @@ namespace ft
 			}
 			template <typename InIter>
 			void			contructor_range(InIter first, InIter  last, const std::input_iterator_tag&)
+			{
+				while(first != last)
+					push_back(*first++);
+			}
+			template <class InputIterator>
+			void do_assign (InputIterator first, InputIterator last, const std::forward_iterator_tag&)
+			{
+				difference_type n;
+				difference_type	i;
+
+				n = std::distance(first, last);
+				if (_capacity < n)
+				{
+					_alloc.deallocate(_ptr, _capacity);
+					_ptr = _alloc.allocate(n);
+					_capacity = n;
+				}
+				for (i = 0; i < n; i++)
+					_alloc.construct(&_ptr[i],*first++);
+				_size = n;
+			}
+			template <class InputIterator>
+			void do_assign (InputIterator first, InputIterator last, const std::input_iterator_tag&)
 			{
 				while(first != last)
 					push_back(*first++);

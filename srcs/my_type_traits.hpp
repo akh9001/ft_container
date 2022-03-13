@@ -1,19 +1,34 @@
 #pragma once
+#include "iterator.hpp"
 
 namespace ft
 {
-	// * This template is designed to provide compile-time constants as types. 
-	// ? A compile-time constant is a value that is computed at the compilation-time.
-	template <class T, T v>
-	struct integral_constant 
+	//! Distance :
+	//? https://en.cppreference.com/w/cpp/iterator/distance
+	template<class InputIterator>
+	typename iterator_traits<InputIterator>::difference_type
+		distance (InputIterator first, InputIterator last)
 	{
-		static const T value = v;
-		typedef T value_type;
-		typedef integral_constant<T,v> type;
-		const operator T()
-		{ 
-			return v; 
+		return (calcul_distance(first, last, typename iterator_traits<InputIterator>::iterator_category()));
+	}
+
+	template<class InputIterator>
+	typename iterator_traits<InputIterator>::difference_type
+	calcul_distance(InputIterator first, InputIterator last, typename std::random_access_iterator_tag)
+	{
+		return (last - first);
+	}
+
+	template<class InputIterator>
+	typename iterator_traits<InputIterator>::difference_type
+	calcul_distance(InputIterator first, InputIterator last, typename std::input_iterator_tag)
+	{
+		typename iterator_traits<InputIterator>::difference_type distance = 0;
+		while (first != last)
+		{
+			first++;
+			distance++;
 		}
-	};
-	typedef integral_constant<bool,false> false_type;
+		return (distance);
+	}
 }

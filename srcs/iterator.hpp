@@ -6,13 +6,13 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 18:15:16 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/11 18:33:44 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/13 03:40:25 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include <iostream>
-
+#include <cstddef>
 //? Lvalues and rvalues: a friendly definition : https://www.internalpointers.com/post/understanding-meaning-lvalues-and-rvalues-c
 //TODO: friend in cpp
 namespace ft

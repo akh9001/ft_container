@@ -30,16 +30,16 @@ namespace ft
 	{
 		static const bool value = true;
 	};
-	template <>
-	struct is_integral<char16_t>
-	{
-		static const bool value = true;
-	};
-	template <>
-	struct is_integral<char32_t>
-	{
-		static const bool value = true;
-	};
+	// template <>
+	// struct is_integral<char16_t>
+	// {
+	// 	static const bool value = true;
+	// };
+	// template <>
+	// struct is_integral<char32_t>
+	// {
+	// 	static const bool value = true;
+	// };
 	template <>
 	struct is_integral<wchar_t>
 	{
