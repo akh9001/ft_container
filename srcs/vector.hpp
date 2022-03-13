@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/13 05:58:57 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/14 00:02:09 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -281,7 +281,8 @@ namespace ft
 		
 			iterator insert (iterator position, const value_type& val)
 			{
-				difference_type	diff = ft::distance(position, this->begin());
+				difference_type	diff = ft::distance(this->begin(), position);
+
 				insert(position, 1, val);
 				// std::cout << GREEN << "Hamida " << *position << RESET << std::endl;
 				return (this->begin() + diff);
@@ -295,28 +296,14 @@ namespace ft
 				size_type	lastPosition = firstPosition + n;
 				size_type	i;
 
-				// if (newSize > max_size())
-				// 	throw(std::length_error(std::string("vector::insert")));
-				
 				reserve(newSize > _capacity ? newCapacity : newSize);
-				// if (newSize <= _capacity)
-				// {
-					std::cout << "Last position = " << lastPosition << " ,First position = " << firstPosition << "\nnewSize = " << newSize << ", capacity = " << _capacity << std::endl;
 					for(i = newSize - 1; i >= lastPosition; i--)
 					{
 						_ptr[i] = _ptr[i - 1];
 					}
 					for (i = lastPosition; i > firstPosition; i--)
-					{
-						std::cout << CYAN << "index = " << i << " " << _ptr[i] << RESET<< std::endl;
 						_ptr[i - 1 ] = val;
-					}
 					_size = newSize;
-				// }
-				// else
-				// {
-				// 	reserve(newCapacity);
-				// }
 			}
 			
 		// * Removes from the vector either a single element (position) or a range of elements ([first,last)).
