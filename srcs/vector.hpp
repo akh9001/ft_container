@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/14 01:31:19 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/14 11:18:41 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,7 +169,7 @@ namespace ft
 							_alloc.construct(&tmp[i],_ptr[i]);//tmp[i] = _ptr[i]; //* may be yo should use allocator::construct.
 					}
 					for(i = _size; i < n; ++i)
-						_alloc.construct(&tmp[i],val);//tmp[i] = val; //* may be yo should use allocator::construct.
+						_alloc.construct(&tmp[i],val);//tmp[i] = val; //* if you use .tmp[i] = val, with a const T it wouldnt work, beacause const T should be initialized so you have to use constructors
 					if (n > _capacity)
 					{
 						for(int j = 0; j < _size; ++j)
@@ -296,15 +296,57 @@ namespace ft
 				size_type	i;
 
 				reserve(newSize > _capacity ? newCapacity : newSize);
-					for(i = newSize - 1; i >= lastPosition; i--)
-						_alloc.construct(&_ptr[i], _ptr[i - 1]);
-						// _ptr[i] = _ptr[i - 1];
-					for (i = lastPosition; i > firstPosition; i--)
+				for(i = newSize - 1; i >= lastPosition; i--)
+				{
+					if (i >= _size)
+					// std::cout << GREEN << " i = " << i << ", i - firstPosition " << i - n << RESET << std::endl;
+						_alloc.construct(&_ptr[i], _ptr[i - n]);
+					else
+						_ptr[i] = _ptr[i - n];
+				}
+				for (i = lastPosition; i > firstPosition; i--)
+				{
+					if (i >= _size)
 						_alloc.construct(&_ptr[i - 1], val);
-						// _ptr[i - 1 ] = val;
-					_size = newSize;
+					else
+						_ptr[i - 1 ] = val;
+				}
+				_size = newSize;
 			}
-			
+		//  ? range
+			template <class InputIterator>
+			void insert (iterator position, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last)
+			{
+				// difference_type	n = std::distance(first, last);
+				// size_type		newSize = n + _size;
+				// size_type		newCapacity = newSize < (2 * _capacity ) ? (2 * _capacity ): newSize;
+				// size_type		firstPosition = std::distance(this->begin(), position);
+				// size_type		lastPosition = firstPosition + n;
+				// size_type		i;
+				
+				// reserve(newSize > _capacity ? newCapacity : newSize);
+				// //* Decaler les n dernieres elts de mon vector.
+				// for(i = newSize - 1; i >= lastPosition; i--)
+				// {
+				// 	if (i >= _size)
+				// 		_alloc.construct(&_ptr[i], _ptr[i - n]);
+				// 	else
+				// 		_ptr[i] = _ptr[i - n];
+				// }
+				// //* Copier les n elts 
+				// for (i = lastPosition; i > firstPosition; i--)
+				// {
+				// 	if (i >= _size)
+				// 	{
+				// 		std::cout << YELLOW << "Botato" << RESET << std::endl;
+				// 		_alloc.construct(&_ptr[i - 1], *--last);
+				// 	}
+				// 	else
+				// 		_ptr[i - 1 ] = *--last;
+				// }
+				// _size = newSize;
+				do_insert(position, first, last, typename std::iterator_traits<InputIterator>::iterator_category());
+			}
 		// * Removes from the vector either a single element (position) or a range of elements ([first,last)).
 			iterator erase (iterator position)
 			{
@@ -388,6 +430,58 @@ namespace ft
 			{
 				while(first != last)
 					push_back(*first++);
+			}
+			template <class InputIterator>
+			void do_insert (iterator position, InputIterator first, InputIterator last, const std::forward_iterator_tag&)
+			{
+				difference_type	n = std::distance(first, last);
+				size_type		newSize = n + _size;
+				size_type		newCapacity = newSize < (2 * _capacity ) ? (2 * _capacity ): newSize;
+				size_type		firstPosition = std::distance(this->begin(), position);
+				size_type		lastPosition = firstPosition + n;
+				size_type		i;
+				
+				reserve(newSize > _capacity ? newCapacity : newSize);
+				//* Decaler les n dernieres elts de mon vector.
+				for(i = newSize - 1; i >= lastPosition; i--)
+				{
+					if (i >= _size)
+						_alloc.construct(&_ptr[i], _ptr[i - n]);
+					else
+						_ptr[i] = _ptr[i - n];
+				}
+				//* Copier les n elts 
+				for (i = lastPosition; i > firstPosition; i--)
+				{
+					if (i >= _size)
+					{
+						std::cout << YELLOW << "Botato" << RESET << std::endl;
+						_alloc.construct(&_ptr[i - 1], *--last);
+					}
+					else
+						_ptr[i - 1 ] = *--last;
+				}
+				_size = newSize;
+			}
+			template <class InputIterator>
+			void do_insert (iterator position, InputIterator first, InputIterator last, const std::input_iterator_tag&)
+			{
+				size_type		n = 0;
+				size_type		i = 0;
+				size_type		pos = std::distance(this->begin(), position);
+				reference		tmp;
+				
+				while(first != last)
+				{
+					push_back(*first++);
+					n++;
+				}
+				for (; n >= 0; n--)
+				{
+					tmp = _ptr[pos];
+					_ptr[pos + n] = _ptr[_size - ++i];
+					_ptr[pos] = tmp;
+				}
 			}
 		private:
 			size_type		_size;
