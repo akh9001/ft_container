@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/14 00:02:09 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/14 01:31:19 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,7 +260,7 @@ namespace ft
 					_capacity = n;
 				}
 				for (i = 0; i < n; i++)
-					_alloc.construct(&_ptr[i],val);
+					_alloc.construct(&_ptr[i], val);
 				_size = n;
 			}
 		// * Adds a new element at the end of the vector, after its current last element.
@@ -284,7 +284,6 @@ namespace ft
 				difference_type	diff = ft::distance(this->begin(), position);
 
 				insert(position, 1, val);
-				// std::cout << GREEN << "Hamida " << *position << RESET << std::endl;
 				return (this->begin() + diff);
 			}
 		// ? fill
@@ -298,11 +297,11 @@ namespace ft
 
 				reserve(newSize > _capacity ? newCapacity : newSize);
 					for(i = newSize - 1; i >= lastPosition; i--)
-					{
-						_ptr[i] = _ptr[i - 1];
-					}
+						_alloc.construct(&_ptr[i], _ptr[i - 1]);
+						// _ptr[i] = _ptr[i - 1];
 					for (i = lastPosition; i > firstPosition; i--)
-						_ptr[i - 1 ] = val;
+						_alloc.construct(&_ptr[i - 1], val);
+						// _ptr[i - 1 ] = val;
 					_size = newSize;
 			}
 			
