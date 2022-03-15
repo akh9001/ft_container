@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/14 11:18:41 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/15 01:45:43 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -469,18 +469,18 @@ namespace ft
 				size_type		n = 0;
 				size_type		i = 0;
 				size_type		pos = std::distance(this->begin(), position);
-				reference		tmp;
+				value_type		tmp;
 				
 				while(first != last)
 				{
 					push_back(*first++);
 					n++;
 				}
-				for (; n >= 0; n--)
+				for (; i < n; i++)
 				{
-					tmp = _ptr[pos];
-					_ptr[pos + n] = _ptr[_size - ++i];
-					_ptr[pos] = tmp;
+					tmp = _ptr[pos + i];
+					_ptr[pos + i] = _ptr[_size - n + i];
+					_ptr[_size - n + i] = tmp;
 				}
 			}
 		private:
