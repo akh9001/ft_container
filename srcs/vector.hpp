@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/15 01:45:43 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/15 06:48:16 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ namespace ft
 			{
 				if (this == &x)
 					return (*this);
-				for(int j = 0; j < _size; ++j)
+				for(size_type j = 0; j < _size; ++j)
 					_alloc.destroy(_ptr + j);
 				if (_capacity)
 					_alloc.deallocate(_ptr, _capacity);
@@ -115,13 +115,13 @@ namespace ft
 				_capacity = x._capacity;
 				_alloc = allocator_type();
 				_ptr = _alloc.allocate(_capacity);
-				for(int j = 0; j < _size; ++j)
+				for(size_type j = 0; j < _size; ++j)
 					_alloc.construct(&_ptr[j],x._ptr[j]);
 			}
 		// !Destructor:
 			~vector(void)
 			{
-				for(int i = 0; i < _size; i++)
+				for(size_type i = 0; i < _size; i++)
 					_alloc.destroy(_ptr + i); //? Calls the destructor of the object pointed to by p (Calls p->~U()).
 				_alloc.deallocate(_ptr, _capacity);
 			}
@@ -199,9 +199,9 @@ namespace ft
 				if (n > _capacity)
 				{
 					tmp = tmp_alloc.allocate(n);
-					for(int i = 0; i < _size; ++i)
+					for(size_type i = 0; i < _size; ++i)
 						_alloc.construct(&tmp[i],_ptr[i]);
-					for(int i = 0; i < _size; ++i)
+					for(size_type i = 0; i < _size; ++i)
 						_alloc.destroy(_ptr + i);		
 					_alloc.deallocate(_ptr, _capacity);
 					_ptr = tmp;
@@ -455,11 +455,11 @@ namespace ft
 				{
 					if (i >= _size)
 					{
-						std::cout << YELLOW << "Botato" << RESET << std::endl;
+						// std::cout << YELLOW << "Botato" << RESET << std::endl;
 						_alloc.construct(&_ptr[i - 1], *--last);
 					}
 					else
-						_ptr[i - 1 ] = *--last;
+						_ptr[i - 1] = *--last;
 				}
 				_size = newSize;
 			}
