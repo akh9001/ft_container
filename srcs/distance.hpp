@@ -5,6 +5,11 @@ namespace ft
 {
 	//! Distance :
 	//? https://en.cppreference.com/w/cpp/iterator/distance
+	//*******************************************************************
+	//*																	*
+	//*								distance							*
+	//*																	*
+	//*******************************************************************
 	template<class InputIterator>
 	typename iterator_traits<InputIterator>::difference_type
 		distance (InputIterator first, InputIterator last)
@@ -18,7 +23,7 @@ namespace ft
 	{
 		return (last - first);
 	}
-
+	
 	template<class InputIterator>
 	typename iterator_traits<InputIterator>::difference_type
 	calcul_distance(InputIterator first, InputIterator last, typename std::input_iterator_tag)

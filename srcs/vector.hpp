@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/15 06:48:16 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/17 04:17:15 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@
 #include <iterator>
 #include "iterator.hpp"
 #include "enable_if.hpp"
-#include "my_type_traits.hpp"
+#include "distance.hpp"
+#include "equal.hpp"
+#include "lexicographical_compare.hpp"
 #define RESET   "\033[0m"
 #define BLACK   "\033[30m"      /* Black */
 #define RED     "\033[31m"      /* Red */
@@ -89,7 +91,7 @@ namespace ft
 				_capacity = n;
 				_alloc = alloc;
 				_ptr = _alloc.allocate(n);
-				for (int i = 0; i < n; i++)
+				for (size_type i = 0; i < n; i++)
 					_alloc.construct(_ptr + i, val);	
 			}
 			template <typename InIter> 
@@ -117,6 +119,7 @@ namespace ft
 				_ptr = _alloc.allocate(_capacity);
 				for(size_type j = 0; j < _size; ++j)
 					_alloc.construct(&_ptr[j],x._ptr[j]);
+					return (*this);
 			}
 		// !Destructor:
 			~vector(void)
@@ -128,18 +131,18 @@ namespace ft
 		//! Iterators:
 		//* Returns an iterator pointing to the first element in the vector.
 			iterator begin(void) {return (iterator(_ptr));}
-			const_iterator begin(void) const{return (iterator(_ptr));}
+			const_iterator begin(void) const{return (const_iterator(_ptr));}
 		//* Returns an iterator referring to the past-the-end element in the vector container.
 		//? The past-the-end element is the theoretical element that would follow the last element in the vector.
 		//? It does not point to any element, and thus shall not be dereferenced.
 			iterator end() { return(iterator(_ptr + _size));}
-			const_iterator end() const { return iterator(_ptr + _size);}
+			const_iterator end() const { return const_iterator(_ptr + _size);}
 		//* Returns a reverse iterator pointing to the last element in the vector.
 			reverse_iterator rbegin() {return (reverse_iterator(end()));}
-			const_reverse_iterator rbegin() const {reverse_iterator(end());}
+			const_reverse_iterator rbegin() const {const_reverse_iterator(end());}
 		//* Returns a reverse iterator pointing to the theoretical element preceding the first element in the vector.
 			reverse_iterator rend(){ return(reverse_iterator(begin()));}
-			const_reverse_iterator rend() const{ return(reverse_iterator(begin()));}
+			const_reverse_iterator rend() const{ return(const_reverse_iterator(begin()));}
 		//! Capacity:
 		//* Returns the number of elements in the vector.
 			size_type size() const {return (_size);}
@@ -148,7 +151,7 @@ namespace ft
 		//* Resizes the container so that it contains n elements.
 			void resize (size_type n, value_type val = value_type())
 			{
-				int				i = 0;
+				size_type				i = 0;
 				pointer			tmp = _ptr;
 				size_type		newCapacity = n > _capacity * 2 ? n : _capacity * 2;
 				allocator_type	tmp_alloc;
@@ -157,7 +160,7 @@ namespace ft
 					throw(std::length_error(std::string("vector::resize")));
 				if (n < _size)
 				{
-					for(int j = n; j < _size; ++j)
+					for(size_type j = n; j < _size; ++j)
 						_alloc.destroy(_ptr + j);
 				}
 				else
@@ -172,7 +175,7 @@ namespace ft
 						_alloc.construct(&tmp[i],val);//tmp[i] = val; //* if you use .tmp[i] = val, with a const T it wouldnt work, beacause const T should be initialized so you have to use constructors
 					if (n > _capacity)
 					{
-						for(int j = 0; j < _size; ++j)
+						for(size_type j = 0; j < _size; ++j)
 							_alloc.destroy(_ptr + j);
 						_alloc.deallocate(_ptr, _capacity);
 						_ptr = tmp;
@@ -295,6 +298,8 @@ namespace ft
 				size_type	lastPosition = firstPosition + n;
 				size_type	i;
 
+				if (!n)
+					return ;
 				reserve(newSize > _capacity ? newCapacity : newSize);
 				for(i = newSize - 1; i >= lastPosition; i--)
 				{
@@ -317,34 +322,6 @@ namespace ft
 			template <class InputIterator>
 			void insert (iterator position, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last)
 			{
-				// difference_type	n = std::distance(first, last);
-				// size_type		newSize = n + _size;
-				// size_type		newCapacity = newSize < (2 * _capacity ) ? (2 * _capacity ): newSize;
-				// size_type		firstPosition = std::distance(this->begin(), position);
-				// size_type		lastPosition = firstPosition + n;
-				// size_type		i;
-				
-				// reserve(newSize > _capacity ? newCapacity : newSize);
-				// //* Decaler les n dernieres elts de mon vector.
-				// for(i = newSize - 1; i >= lastPosition; i--)
-				// {
-				// 	if (i >= _size)
-				// 		_alloc.construct(&_ptr[i], _ptr[i - n]);
-				// 	else
-				// 		_ptr[i] = _ptr[i - n];
-				// }
-				// //* Copier les n elts 
-				// for (i = lastPosition; i > firstPosition; i--)
-				// {
-				// 	if (i >= _size)
-				// 	{
-				// 		std::cout << YELLOW << "Botato" << RESET << std::endl;
-				// 		_alloc.construct(&_ptr[i - 1], *--last);
-				// 	}
-				// 	else
-				// 		_ptr[i - 1 ] = *--last;
-				// }
-				// _size = newSize;
 				do_insert(position, first, last, typename std::iterator_traits<InputIterator>::iterator_category());
 			}
 		// * Removes from the vector either a single element (position) or a range of elements ([first,last)).
@@ -441,6 +418,8 @@ namespace ft
 				size_type		lastPosition = firstPosition + n;
 				size_type		i;
 				
+				if (!n)
+					return ;
 				reserve(newSize > _capacity ? newCapacity : newSize);
 				//* Decaler les n dernieres elts de mon vector.
 				for(i = newSize - 1; i >= lastPosition; i--)
@@ -454,10 +433,7 @@ namespace ft
 				for (i = lastPosition; i > firstPosition; i--)
 				{
 					if (i >= _size)
-					{
-						// std::cout << YELLOW << "Botato" << RESET << std::endl;
 						_alloc.construct(&_ptr[i - 1], *--last);
-					}
 					else
 						_ptr[i - 1] = *--last;
 				}
@@ -489,4 +465,48 @@ namespace ft
 			allocator_type	_alloc;
 			pointer			_ptr;
 	};
+	//! Non-member function overloads :
+	template <class T, class Alloc>
+	void swap (vector<T,Alloc>& x, vector<T, Alloc>& y)
+	{
+		x.swap(y); 
+	}
+	
+	template <class T, class Alloc>
+	bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		if (lhs.size() != rhs.size())
+			return (false);
+		return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
+	}
+	// * a != b <==> !(a == b)
+	template <class T, class Alloc>
+	bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return !(lhs == rhs);
+	}
+	
+	template <class T, class Alloc>
+	bool operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+	}
+	// * a <= b <==> !(b < a)
+	template <class T, class Alloc>
+	bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (!(rhs < lhs));
+	}
+	// * a > b	<==> b < a
+	template <class T, class Alloc>
+	bool operator> (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (rhs < lhs);
+	}
+	// * a >= b	<==> !(a < b)
+	template <class T, class Alloc>
+	bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (!(lhs < rhs));
+	}
 };
