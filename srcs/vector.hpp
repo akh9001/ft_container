@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/17 05:30:41 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/17 07:47:14 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,8 +258,8 @@ namespace ft
 			void pop_back(void)
 			{
 				_alloc.destroy(_ptr + (--_size));
-				// _alloc.destroy(_ptr + (_size - 1));
 				// _size -= 1;
+				// _alloc.destroy(_ptr + _size);
 			}
 		// * The vector is extended by inserting new elements before the element at the specified position, effectively increasing the container size by the number of elements inserted.
 		// ? Single element :
@@ -321,14 +321,14 @@ namespace ft
 			iterator erase (iterator first, iterator last)
 			{
 				size_type	start = first - this->begin();
-				size_type	end = last - this->begin();
 				size_type	n = last - first;
+				size_type	end = start + n;//last - this->begin();
 
-				for(size_type i = 0; i <= _size ; ++i)
+				for(size_type i = 0; i < _size ; ++i)
 					_ptr[start + i] = _ptr[end + i];
 				for(size_type i = 0; i < n ; ++i)
 					pop_back();
-				return(last);
+				return(first);
 			}
 		// * Exchanges the content of the container by the content of x, which is another vector object of the same type. Sizes may differ.
 			void swap (vector& x)
