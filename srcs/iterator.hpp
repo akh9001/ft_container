@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 18:15:16 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/16 20:32:23 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/17 04:38:38 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,8 +113,6 @@ namespace ft
 	template <typename _Iter>
 	class	reverse_iterator
 	{						
-		private :
-			_Iter		_it;
 		public :
 			//? Member types :
 			typedef _Iter									   				iterator_type;				//* Iterator's type		
@@ -132,13 +130,13 @@ namespace ft
 			template <class Iter>
 			reverse_iterator (const reverse_iterator<Iter>& rev_it){*this = rev_it;}
 			template <class Iter>
-			std::random_access_iterator_tag& operator=(const reverse_iterator<Iter>& rev_it) {_it = rev_it.base(); return (*this);}
+			reverse_iterator& operator=(const reverse_iterator<Iter>& rev_it) {_it = rev_it.base(); return (*this);}
 		
 			//! operators overload :
 			//? Member functions :
-			value_type	base(void) const{ return(_it);} //* Getter : Returns a copy of the base iterator
+			iterator_type	base(void) const{ return(_it);} //* Getter : Returns a copy of the base iterator
 			//* operator* Returns a reference to the element previous to current.
-			reference	operator*() const {return(*(_it - 1));}
+			reference		operator*() const {return(*(_it - 1));}
 			//* operator+ Addition operator
 			reverse_iterator operator+( difference_type n ) const { return reverse_iterator(_it - n);}
 			//* operator++ Increment iterator position
@@ -157,6 +155,8 @@ namespace ft
 			pointer		operator->() const { return((_it - 1).operator->());}
 			//* operator[] Returns a reference to the element at specified relative location, that is, base()[-n-1].
 			reference	operator[]( difference_type n ) const {return ((_it - 1).operator[](n));}
+		private :
+			iterator_type		_it;
 	};
 	//? Non-member function overloads :
 	template <typename _IterL, typename _IterR>
