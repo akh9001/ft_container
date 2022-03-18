@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/17 07:47:14 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/18 08:25:41 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 #include <iostream>
 #include <memory>
 #include <vector>
-#include <iterator>
-#include "iterator.hpp"
-#include "enable_if.hpp"
-#include "distance.hpp"
-#include "equal.hpp"
-#include "lexicographical_compare.hpp"
+#include "../iterators/iterator.hpp"
+#include "../iterators/reverse_iterator.hpp"
+#include "../utility/enable_if.hpp"
+#include "../utility/distance.hpp"
+#include "../utility/equal.hpp"
+#include "../utility/lexicographical_compare.hpp"
 
 /*
  *jlkll
@@ -286,7 +286,6 @@ namespace ft
 				for(i = newSize - 1; i >= lastPosition; i--)
 				{
 					if (i >= _size)
-					// std::cout << GREEN << " i = " << i << ", i - firstPosition " << i - n << RESET << std::endl;
 						_alloc.construct(&_ptr[i], _ptr[i - n]);
 					else
 						_ptr[i] = _ptr[i - n];
@@ -309,12 +308,6 @@ namespace ft
 		// * Removes from the vector either a single element (position) or a range of elements ([first,last)).
 			iterator erase (iterator position)
 			{
-				// size_type	start = position - this->begin();
-				
-				// for(size_type i = start; i < _size - 1 ; ++i)
-				// 	_ptr[i] = _ptr[i + 1];
-				// pop_back();
-				// return(position);
 				return(erase(position, position + 1));
 			}
 			
@@ -322,7 +315,7 @@ namespace ft
 			{
 				size_type	start = first - this->begin();
 				size_type	n = last - first;
-				size_type	end = start + n;//last - this->begin();
+				size_type	end = start + n;
 
 				for(size_type i = 0; i < _size ; ++i)
 					_ptr[start + i] = _ptr[end + i];

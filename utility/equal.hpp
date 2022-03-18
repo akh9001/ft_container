@@ -6,11 +6,12 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 03:32:38 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/17 04:02:47 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/18 08:20:19 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+
 namespace ft
 {
 	template <class InputIterator1, class InputIterator2>
@@ -25,4 +26,5 @@ namespace ft
 		}
 		return true;
 	}
+	
 }
