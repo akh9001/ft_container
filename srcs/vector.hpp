@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/18 08:25:41 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/04/05 03:29:56 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,6 @@
 //! Difference between typedef & define :
 //* typedef can provide alternative names to data types only. It cannot do the same with values.
 //* It can provide alternative names to values as well. For example, 3.14159 can be defined as pi.
-//TODO: Asmaa matnsaych ta9ray hadi: https://data-flair.training/blogs/preprocessors-in-c/
-//TODO: Should read about iterators
 /*
 ? typename : https://stackoverflow.com/questions/18385418/c-meaning-of-a-statement-combining-typedef-and-typename#:~:text=typename%20here%20is,of%20as%20contains.
 ? explicit keyword : https://stackoverflow.com/questions/121162/what-does-the-explicit-keyword-mean
@@ -317,7 +315,7 @@ namespace ft
 				size_type	n = last - first;
 				size_type	end = start + n;
 
-				for(size_type i = 0; i < _size ; ++i)
+				for(size_type i = 0; i < _size && end + i < _size; ++i)
 					_ptr[start + i] = _ptr[end + i];
 				for(size_type i = 0; i < n ; ++i)
 					pop_back();
@@ -391,28 +389,84 @@ namespace ft
 				size_type		newCapacity = newSize < (2 * _capacity ) ? (2 * _capacity ): newSize;
 				size_type		firstPosition = std::distance(this->begin(), position);
 				size_type		lastPosition = firstPosition + n;
-				size_type		i;
+				// size_type		i;
 				
 				if (!n)
 					return ;
-				reserve(newSize > _capacity ? newCapacity : newSize);
-				//* Decaler les n dernieres elts de mon vector.
-				for(i = newSize - 1; i >= lastPosition; i--)
+				// reserve(newSize > _capacity ? newCapacity : newSize);
+				// //* Decaler les n dernieres elts de mon vector.
+				// for(i = newSize - 1; i >= lastPosition; i--)
+				// {
+				// 	if (i >= _size)
+				// 		_alloc.construct(&_ptr[i], _ptr[i - n]);
+				// 	else
+				// 		_ptr[i] = _ptr[i - n];
+				// }
+				// //* Copier les n elts 
+				// for (i = lastPosition; i > firstPosition; i--)
+				// {
+				// 	if (i >= _size)
+				// 		_alloc.construct(&_ptr[i - 1], *--last);
+				// 	else
+				// 		_ptr[i - 1] = *--last;
+				// }
+				// _size = newSize;
+				if(_size + n > _capacity)
 				{
-					if (i >= _size)
-						_alloc.construct(&_ptr[i], _ptr[i - n]);
-					else
-						_ptr[i] = _ptr[i - n];
-				}
-				//* Copier les n elts 
-				for (i = lastPosition; i > firstPosition; i--)
+					pointer tmpBegin;
+				size_type a = newSize > _capacity ? newCapacity : newSize;
+				size_type i = 0;
+				try
 				{
-					if (i >= _size)
-						_alloc.construct(&_ptr[i - 1], *--last);
-					else
-						_ptr[i - 1] = *--last;
+					tmpBegin = _alloc.allocate(a);
+					
+					while(i < firstPosition)
+					{
+						_alloc.construct(tmpBegin + i, _ptr[i]);
+						i++;
+					}
+					while(i < lastPosition)
+					{
+						_alloc.construct(tmpBegin + i, *(first++));
+						i++;
+					}
+					while(i < _size + n)
+					{
+						_alloc.construct(tmpBegin + i, _ptr[i - n]);
+						i++;
+					}
 				}
+				catch(...)
+				{
+					while(i-- > 0)
+						_alloc.destroy(tmpBegin + i);
+					_alloc.deallocate(tmpBegin,a);
+					throw;
+				}
+				i = 0;
+				while(i < _size)
+					_alloc.destroy(_ptr + i++);
+				_alloc.deallocate(_ptr, _capacity);
+				_ptr = tmpBegin;
 				_size = newSize;
+				_capacity = newCapacity;
+				}
+				else
+				{
+					vector tmp = *this;
+					size_type i = firstPosition;
+					while(i < lastPosition)
+					{
+						_alloc.construct(_ptr + i, *(first++));
+						i++;
+					}
+					while(i < _size + n)
+					{
+						_alloc.construct(_ptr + i, tmp._ptr[i - n]);
+						i++;
+					}
+					_size = newSize;
+				}
 			}
 			template <class InputIterator>
 			void do_insert (iterator position, InputIterator first, InputIterator last, const std::input_iterator_tag&)
