@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 08:00:34 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/20 02:26:27 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/20 02:28:04 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ namespace ft
 		//*		6- pop	 : Remove top element (last element).									*
 		//***************************************************************************************
 		//! 1- Constructor :
-			explicit stack (const container_type& ctnr = container_type()) : c(ctnr) {} //  c(ctnr)
+			explicit stack (const container_type& ctnr = container_type()) : c(ctnr) {}
 		//! 2- empty :
 			bool empty() const { return(c.empty()); }
 		//! 3- size :

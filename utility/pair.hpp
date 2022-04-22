@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/20 16:13:08 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/20 18:28:35 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/03/31 19:27:20 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,9 @@ namespace ft
 	template <class T1, class T2>
 	  bool operator!= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
 	  	{ return(!(lhs == rhs)); }
+	//?	Pour comparer un pair, le premier elt est prioritaire. Donc,
+	//? si le premier elt(de l 'objet lhs) est inferieur au deuxieme elt(rhs) => lhs < rhs
+	//? sinon si ils sont equivalent, on compare les deuxieme elt du pair.
 	template <class T1, class T2>
 	  bool operator<  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
 	  	{ return lhs.first < rhs.first || (!(rhs.first < lhs.first) && lhs.second < rhs.second); }
