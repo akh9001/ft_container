@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/20 16:13:08 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/31 19:27:20 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/04/23 17:36:44 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ namespace ft
 			//? 3- initialization constructor :
 				pair (const first_type& a, const second_type& b) : first(a), second(b) {}
 		//! operator= :
-			pair& operator= (const pair& pr) {first = pr.first; second = pr.second;}
+			pair& operator= (const pair& pr) {first = pr.first; second = pr.second; return *this;}
 	};
 		//! Non-member function overloads :
 	template <class T1, class T2>
