@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/20 16:13:08 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/04/23 17:36:44 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/04/24 22:08:37 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,5 +64,8 @@ namespace ft
 	  	{ return rhs < lhs; }
 	template <class T1, class T2>
 	  bool operator>= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
-	  { return !(lhs < rhs); }                                                                                                    
+	  { return !(lhs < rhs); }
+	template <typename T1, typename T2>
+		std::ostream& operator<< (std::ostream& os, pair<T1, T2> const &p)
+		{os << p.first << " " << p.second; return os; }                                                                                               
 }

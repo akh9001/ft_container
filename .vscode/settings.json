@@ -71,6 +71,7 @@
 		"vector": "cpp",
 		"csignal": "cpp",
 		"fstream": "cpp",
-		"*.ipp": "cpp"
+		"*.ipp": "cpp",
+		"filesystem": "cpp"
 	}
 }

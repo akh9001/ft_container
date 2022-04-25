@@ -1,17 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   redBlackTree.hpp                                   :+:      :+:    :+:   */
+/*   rb_tree.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/13 01:13:02 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/04/23 22:35:22 by akhalidy         ###   ########.fr       */
+/*   Created: 2022/04/24 18:27:33 by akhalidy          #+#    #+#             */
+/*   Updated: 2022/04/25 00:07:42 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-
+#include <iostream>
+#include <memory>
+#include <string>
 #define BLACK	0
 #define RED		1
 #define RESET   "\033[0m"
@@ -36,47 +38,129 @@
 
 namespace ft
 {
+	//*************************************************************************
+	//*																		  *
+	//*							Node structure							  	  *
+	//*																		  *
+	//*************************************************************************		
+	
+	/*
+	
+	*/
+	template <typename T>
+	struct node
+	{
+		typedef T						value_type;
+		typedef node*					pointer;
+		typedef const node*				const_pointer;
+		typedef node&					reference;
+		typedef const node&				const_reference;
+		
+		//* Data :
+		value_type	data;
+		pointer		parent;
+		pointer		left;
+		pointer		right;
+		bool		color;
+
+		// * Member functions : 
+		node(void) : parent(NULL), left(NULL), right(NULL), color(BLACK) {}
+		node(pointer p, pointer l, pointer r, bool c) : parent(p), left(l), right(r), color(c) {}
+		node(const_reference src) : data(src.data), parent(src.parent), left(src.left), right(src.right), color(src.color) {}
+		node (value_type pair) : data(pair) {}
+		reference operator=(const_reference src)
+		{
+			if (this == &src)
+				return (*this);
+			data = src.data;
+			parent = src.parent;
+			left = src.left;
+			right = src.right;
+			color = src.color;
+			return (*this);
+		}
+		pointer	min(pointer x) const
+		{
+			while (x->left != NULL)
+				x = x->left;
+			return x;
+		}
+		
+		pointer	max(pointer x) const
+		{
+			while (x->right != NULL)
+				x = x->right;
+			return x;
+		}
+		
+		pointer	successor(pointer x) const
+		{
+			pointer	y;
+			
+			if (x->right != NULL)
+				return (min(x->right));
+			y = x->parent;
+			while (y != NULL && x == y->right)
+			{
+				x = y;
+				y = y->parent;
+			}
+			return y;
+		}
+		
+		pointer	predecessor(pointer x) const
+		{
+			pointer	y;
+			
+			if (x->left != NULL)
+				return (max(x->left));
+			y = x->parent;
+			while (y != NULL && x == y->left)
+			{
+				x = y;
+				y = y->parent;
+			}
+			return y;
+		}
+		~node(void) {}
+	};
+
+	
+
+	//! ***************************************************************************
+	//! 																		  *
+	//! 							red Black Tree							  	  *
+	//! 																		  *
+	//! ***************************************************************************	
+	
 	template <typename T, typename value_compare, typename Alloc = std::allocator<T> >
 	class redBlackTree
 	{
-		class node;
-		typedef T													value_type;
-		typedef value_compare										key_compare;
-		typedef typename redBlackTree<T, value_compare>::node::pointer				node_ptr;
-		// ? https://stackoverflow.com/questions/14148756/what-does-template-rebind-do
-		typedef	typename Alloc::template rebind<node>::other		alloc_type;
-		
 		public:
-			
-			redBlackTree(void) : _less(), _alloc(), _root(NULL)  {}
+			//* Member type	:
+			typedef T													value_type;
+			typedef value_compare										key_compare;
+			typedef typename ft::node<value_type>						node;
+			typedef typename ft::node<value_type>::pointer				node_ptr;
+			// ? https://stackoverflow.com/questions/14148756/what-does-template-rebind-do
+			typedef	typename Alloc::template rebind<node>::other		alloc_type;
+			//* Constructor & destructor:
+			redBlackTree(void) : _less(), _alloc(), _root(NULL) {}
 			~redBlackTree(void) {}
-			
-			node_ptr	get_root(void) const {return _root;}
-			node_ptr	begin(void) const {return (min(_root));}
-			// node_ptr	end(void) 
-			// {return (min(_root));}
-			
-		//************************************************************************/
-		//* 																	  /
-		//*																		  /
-		//*							Static functions							  /
-		//*																		  /
-		//*																		  /
-		//************************************************************************/
-
-			static node_ptr	get_root(node_ptr x) { while(parent(x)) x = parent(x); return x;}
-			static node_ptr	get_min(node_ptr x) { return min(x);}
-			static node_ptr	get_max(node_ptr x) { return max(x);}
-			static node_ptr	get_successor(node_ptr x) { return successor(x);}
-			static node_ptr	get_predecessor(node_ptr x) { return predecessor(x);}
 		
-		//************************************************************************/
-		//* 																	  /
-		//*																		  /
-		//*								Print Tree								  /
-		//*																		  /
-		//*																		  /
-		//************************************************************************/
+		//*************************************************************************
+		//*																		  *
+		//*								Geters									  *
+		//*																		  *
+		//*************************************************************************
+			// type * cont ptr;
+			node_ptr	get_root(void) { return _root; }
+			node_ptr	get_begin(void) { return _root->min(_root); }
+		//*************************************************************************
+		//*																		  *
+		//*								Print Tree								  *
+		//*																		  *
+		//*************************************************************************
 
 			// * Print constructed binary tree
 			struct Trunk
@@ -138,21 +222,21 @@ namespace ft
 				trunk->str = "   |";
 			
 				printTree(root->left, trunk, false);
-			} 
-		//************************************************************************/
-		//* 																	  /
-		//*																		  /
-		//*							Tree Utilities :							  /
-		//*		1 -  search														  /
-		//*		2 -  inoderprint												  /
-		//*		3 -  min														  /
-		//*		4 -  max														  /
-		//*		5 -  successor													  /
-		//*		6 -  predecessor												  /
-		//*		7 -  create_node												  /
-		//*		8 -  rb_transplant												  /
-		//*																		  /
-		//************************************************************************/
+			}
+		
+		//*************************************************************************
+		//*																		  *
+		//*							Tree Utilities :							  *
+		//*		1 -  search														  *
+		//*		2 -  inoderprint												  *
+		//*		3 -  min														  *
+		//*		4 -  max														  *
+		//*		5 -  successor													  *
+		//*		6 -  predecessor												  *
+		//*		7 -  create_node												  *
+		//*		8 -  rb_transplant												  *
+		//*																		  *
+		//*************************************************************************
 			
 			node_ptr	search(node_ptr x, value_type key)
 			{
@@ -175,49 +259,6 @@ namespace ft
 					inoderprint(x->right);
 				}
 			}
-			node_ptr	min(node_ptr x)
-			{
-				while (x->left != NULL)
-					x = x->left;
-				return x;
-			}
-			
-			node_ptr	max(node_ptr x)
-			{
-				while (x->right != NULL)
-					x = x->right;
-				return x;
-			}
-			
-			node_ptr	successor(node_ptr x)
-			{
-				node_ptr	y;
-				
-				if (x->right != NULL)
-					return (min(x->right));
-				y = x->parent;
-				while (y != NULL && x == y->right)
-				{
-					x = y;
-					y = y->parent;
-				}
-				return y;
-			}
-			
-			node_ptr	predecessor(node_ptr x)
-			{
-				node_ptr	y;
-				
-				if (x->left != NULL)
-					return (max(x->left));
-				y = x->parent;
-				while (y != NULL && x == y->left)
-				{
-					x = y;
-					y = y->parent;
-				}
-				return y;
-			}
 			
 			node_ptr	create_node(value_type key, node_ptr parent)
 			{
@@ -230,7 +271,7 @@ namespace ft
 				new_node->left = NULL;
 				new_node->right = NULL;
 				new_node->color = RED;
-				new_node->data = key;
+				// new_node->data = key;
 				return new_node;
 			}
 			
@@ -247,15 +288,14 @@ namespace ft
 					v->parent = u->parent;
 			}
 
-		//************************************************************************/
-		//* 																	  /
-		//*																		  /
-		//*								Rotation								  /
-		//*																		  /
-		//*					1- left_rotate										  /
-		//*					1- right_rotate										  /
-		//*																		  /
-		//************************************************************************/
+		//*************************************************************************
+		//* 																	  *
+		//*								Rotation								  *
+		//*																		  *
+		//*					1- left_rotate										  *
+		//*					1- right_rotate										  *
+		//*																		  *
+		//*************************************************************************
 			
 			void			left_rotate(node_ptr x)
 			{
@@ -299,13 +339,11 @@ namespace ft
 				x->parent = y;
 			}
 			
-		//************************************************************************/
-		//* 																	  /
-		//*																		  /
-		//*								Insertion								  /
-		//*																		  /
-		//*																		  /
-		//************************************************************************/
+		//*************************************************************************
+		//* 																	  *
+		//*								Insertion								  *
+		//*																		  *
+		//*************************************************************************
 			
 			node_ptr		bst_insert(value_type key)
 			{
@@ -313,7 +351,7 @@ namespace ft
 				node_ptr	y = NULL;
 				node_ptr	z = search(_root, key);
 				node_ptr	parent;
-				
+
 				if (!z)
 				{
 					while (x != NULL)
@@ -332,8 +370,8 @@ namespace ft
 					else
 						y->right = z;
 				}
-				else
-					z->data = key;
+				// else
+				// 	z->data = key;
 				return z;
 			}
 			
@@ -386,13 +424,11 @@ namespace ft
 				_root->color = BLACK;
 			}
 			
-		//************************************************************************/
-		//* 																	  /
-		//*																		  /
-		//*								Deletion								  /
-		//*																		  /
-		//*																		  /
-		//************************************************************************/
+		//*************************************************************************
+		//* 																	  *
+		//*								Deletion								  *
+		//*																		  *
+		//*************************************************************************
 		
 		//? double black accurs when you move or remove a black node y,
 		//? we transfer its blakness to x (y's original position).
@@ -546,13 +582,11 @@ namespace ft
 				rb_delete_fix(x, x_parent, y_original_color);
 			}
 			
-		//************************************************************************/
-		//* 																	  /
-		//*																		  /
-		//*							Help Functions : 							  /
-		//*																		  /
-		//*																		  /
-		//************************************************************************/	
+		//*************************************************************************
+		//*																		  *
+		//*							Help Functions : 							  *
+		//*																		  *
+		//*************************************************************************	
 		
 			private :
 
@@ -577,61 +611,14 @@ namespace ft
 				return grandParent(x)->left;
 			}
 
-		//************************************************************************/
-		//* 																	  /
-		//*																		  /
-		//*							Data Member : 								  /
-		//*																		  /
-		//*																		  /
-		//************************************************************************/		
+		//*************************************************************************
+		//*																		  *
+		//*							Data Member : 								  *
+		//*																		  *
+		//*************************************************************************		
 
-			// public :
 			key_compare		_less;
 			alloc_type		_alloc;
 			node_ptr		_root;
-
-		//************************************************************************/
-		//* 																	  /
-		//*																		  /
-		//*							Node structure							  	  /
-		//*																		  /
-		//*																		  /
-		//************************************************************************/		
-
-			private :
-			struct node
-			{
-				typedef T						value_type;
-				typedef node*					pointer;
-				typedef const node*				const_pointer;
-				typedef node&					reference;
-				typedef const node&				const_reference;
-				
-				//* Data :
-				value_type	data;
-				pointer		parent;
-				pointer		left;
-				pointer		right;
-				bool		color;
-		
-				// * Member functions : 
-				node(void) : data(), parent(NULL), left(NULL), right(NULL), color(BLACK) {}
-				// Hamida make sure youre using the constructor below
-				node(pointer l) : data(), parent(NULL), left(l), right(NULL), color(BLACK) {}
-				node(value_type d = value_type(), pointer p = NULL, pointer l = NULL, pointer r = NULL, bool cl = RED) : data(d), parent(p), left(l), right(r), color(cl) {}
-				node(const_reference src) : data(src.data), parent(src.parent), left(src.left), right(src.right), color(src.color) {}
-				reference operator=(const_reference src)
-				{
-					if (this == &src)
-						return (*this);
-					data = src.data;
-					parent = src.parent;
-					left = src.left;
-					right = src.right;
-					color = src.color;
-					return (*this);
-				}
-				~node(void) {}
-			};
 	};
 }

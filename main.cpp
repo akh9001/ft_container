@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/22 16:07:17 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/04/23 21:49:38 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/04/24 23:49:03 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,16 +50,29 @@ int main (void)
 	// {
 	// 	std::cout << it->first << " " << it->second << std::endl;
 	// }
-	ft::map<int, int> test;
+	// ft::map<int, int> test;
 	// ft::redBlackTree<ft::pair<int, int>, ft::map<int, int>::value_compare> test;
+	// ft::map<int, int>::iterator a = test.begin();
+	// std::cout << *a << std::endl;
+	// ft::redBlackTree<ft::pair<int, int>, ft::map<int, int>::value_compare>::iterator it;
+	ft::map<int, int> test;
 	test._tree.rb_insert(ft::make_pair(0, 1));
 	test._tree.rb_insert(ft::make_pair(1, 1));
 	test._tree.rb_insert(ft::make_pair(2, 1));
 	test._tree.rb_insert(ft::make_pair(3, 1));
 	test._tree.rb_insert(ft::make_pair(4, 1));
-	ft::map<int, int>::iterator a = test.begin();
-	std::cout << *a << std::endl;
-	// ft::redBlackTree<ft::pair<int, int>, ft::map<int, int>::value_compare>::iterator it;
 	
+	test._tree.printTree(test._tree.get_root(), nullptr, false);
+	ft::map<int, int>::const_iterator end = test.end();
+	ft::map<int, int>::const_iterator start = test.begin();
+
+	while (start != end)
+	{
+		--end;
+		std::cout << end->first << std::endl;
+	}
+	// &(*it)
+	// std::cout << end->first << std::endl;
+
 	return 0;
 }

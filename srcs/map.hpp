@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 18:38:28 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/04/23 22:36:47 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/04/24 23:58:22 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,7 @@
 
 namespace ft
 {
-	template < class Key,                                     			// map::key_type
-	           class T,                                       			// map::mapped_type
-	           class Compare = std::less<Key>,                     			// map::key_compare
-	           class Alloc = std::allocator<ft::pair<const Key,T> >		// map::allocator_type
+	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> >		// map::allocator_type
 	           >
 	class map
 	{
@@ -66,12 +63,12 @@ namespace ft
 		typedef typename allocator_type::pointer									pointer;
 		typedef typename allocator_type::const_pointer								const_pointer;
 		typedef typename ft::bidirectional_iterator<value_type>						iterator;
-		typedef typename ft::bidirectional_iterator<const_pointer>					const_iterator;
+		typedef typename ft::bidirectional_iterator<const value_type>				const_iterator;
 		typedef typename ft::reverse_iterator<iterator>								reverse_iterator;
 		typedef typename ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 		typedef typename iterator::difference_type									difference_type;
 		typedef	size_t																size_type;
-		typedef typename ft::redBlackTree<value_type, map::value_compare>			tree;
+		typedef typename ft::redBlackTree<value_type, value_compare, Alloc>			tree;
 		
 		class value_compare
 		{
@@ -96,10 +93,11 @@ namespace ft
 		// *																				*
 		// **********************************************************************************
 		
-		iterator begin() { return iterator(_tree.begin());}
-		const_iterator begin() const { return const_iterator(_tree.begin());}
+		iterator begin() { return iterator(_tree.get_begin(), _tree.get_root());}
+		const_iterator begin() const { return const_iterator(_tree.begin(), _tree.get_root());}
+		iterator end() {return iterator(NULL, _tree.get_root());}
+		const_iterator end() const{return const_iterator(NULL, _tree.get_root());}
 
-		
 		// **********************************************************************************
 		// * 																	  			*
 		// *								Modifiers										*
