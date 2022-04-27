@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/22 16:07:17 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/04/27 01:36:48 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/04/27 17:23:00 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,11 @@
 // 	// std::cout << *a << std::endl;
 // 	// ft::redBlackTree<ft::pair<int, int>, ft::map<int, int>::value_compare>::iterator it;
 // 	ft::map<int, int> test;
-// 	test._tree.rb_insert(ft::make_pair(0, 1));
-// 	test._tree.rb_insert(ft::make_pair(1, 1));
-// 	test._tree.rb_insert(ft::make_pair(2, 1));
-// 	test._tree.rb_insert(ft::make_pair(3, 1));
-// 	test._tree.rb_insert(ft::make_pair(4, 1));
+// 	test.insert(ft::make_pair(0, 1));
+// 	test.insert(ft::make_pair(1, 1));
+// 	test.insert(ft::make_pair(2, 1));
+// 	test.insert(ft::make_pair(3, 1));
+// 	test.insert(ft::make_pair(4, 1));
 	
 // 	test._tree.printTree(*test._tree.root(), nullptr, false);
 // 	// test.get_key();
@@ -187,20 +187,81 @@
 // }
 
 // map::begin/end
+// #include <iostream>
+// #include <map>
+
+// int main ()
+// {
+//   ft::map<char,int> mymap;
+
+//   mymap['b'] = 100;
+//   mymap['a'] = 200;
+//   mymap['c'] = 300;
+
+//   // show content:
+//   for (ft::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
+//     std::cout << it->first << " => " << it->second << '\n';
+
+//   return 0;
+// }
+
+// erasing from map
+// #include <iostream>
+// #include <map>
+
+// int main ()
+// {
+//   ft::map<char,int> mymap;
+//   ft::map<char,int>::iterator it;
+
+//   // insert some values:
+//   mymap['a']=10;
+//   mymap['b']=20;
+//   mymap['c']=30;
+//   mymap['d']=40;
+//   mymap['e']=50;
+//   mymap['f']=60;
+
+// 	 mymap._tree.printTree(*mymap._tree.root(), nullptr, false);
+
+//   it=mymap.find('b');
+//   mymap.erase (it);                   // erasing by iterator
+
+//   mymap.erase ('c');                  // erasing by key
+
+//   it=mymap.find ('e');
+//   mymap.erase ( it, mymap.end() );    // erasing by range
+
+//   // show content:
+//   for (it=mymap.begin(); it!=mymap.end(); ++it)
+//     std::cout << it->first << " => " << it->second << '\n';
+// 	 mymap._tree.printTree(*mymap._tree.root(), nullptr, false);
+//   return 0;
+// }
+
+// map::clear
 #include <iostream>
 #include <map>
 
-int main ()
+int main (void)
 {
-  ft::map<char,int> mymap;
+	ft::map<char,int> mymap;
 
-  mymap['b'] = 100;
-  mymap['a'] = 200;
-  mymap['c'] = 300;
+	mymap['x']=100;
+	mymap['y']=200;
+	mymap['z']=300;
 
-  // show content:
-  for (ft::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
-    std::cout << it->first << " => " << it->second << '\n';
+	std::cout << "mymap contains:\n";
+	for (ft::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
+		std::cout << it->first << " => " << it->second << '\n';
 
-  return 0;
+	mymap.clear();
+	mymap['a']=1101;
+	mymap['b']=2202;
+
+	std::cout << "mymap contains:\n";
+	for (ft::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
+		std::cout << it->first << " => " << it->second << '\n';
+
+	return 0;
 }

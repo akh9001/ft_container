@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 18:38:28 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/04/27 01:31:10 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/04/27 17:44:35 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ namespace ft
 	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> >	>
 	class map
 	{
+		private :
+		class accessor;
 		public :
 		//***********************************************************************************
 		//*																					*
@@ -51,7 +53,6 @@ namespace ft
 		//*		size_t		: size_t.														*
 		//***********************************************************************************
 		class value_compare;
-		struct accessor;
 		typedef	Key																						key_type;
 		typedef	T																						mapped_type;
 		typedef	ft::pair<const key_type,mapped_type>													value_type;
@@ -88,13 +89,13 @@ namespace ft
 			}
 		};
 		
-		struct accessor
-		{
-			key_type operator() (value_type p) const
-			{
-				return p.first;
-			}
-		};
+		// struct accessor
+		// {
+		// 	key_type operator() (value_type p) const
+		// 	{
+		// 		return p.first;
+		// 	}
+		// };
 		
 		// **********************************************************************************
 		// * 																	  			*
@@ -139,10 +140,9 @@ namespace ft
 		
 			mapped_type& operator[] (const key_type& k)
 			{
-				iterator	it;
 				value_type	pair(k, mapped_type());
+				iterator	it(insert(pair).first);
 
-				it = insert(pair).first;
 				return (it->second);
 			}
 
@@ -163,27 +163,54 @@ namespace ft
 		// *																				*
 		// **********************************************************************************
 		
-		// * Single element :
-			pair<iterator,bool> insert (const value_type& val)
-			{
-				return _tree.rb_insert(val);
-			}
-		// * With hint (the position) :
-			iterator insert (iterator position, const value_type& val)
-			{
-				(void)position;
-				return _tree.rb_insert(val).first;
-			}
-		// * Range :
-			template <class InputIterator>
-			void insert (InputIterator first, InputIterator last)
+		// ! Insert :
+			// * Single element :
+				pair<iterator,bool> insert (const value_type& val)
+				{
+					return _tree.rb_insert(val);
+				}
+			// * With hint (the position) :
+				iterator insert (iterator position, const value_type& val)
+				{
+					(void)position;
+					return _tree.rb_insert(val).first;
+				}
+			// * Range :
+				template <class InputIterator>
+				void insert (InputIterator first, InputIterator last)
+				{
+					while (first != last)
+					{
+						_tree.rb_insert(*first);
+						first++;
+					}
+				}
+		// ! Erase :
+			// * The function removes the element pointed by position :
+			// ? This shall point to a valid and dereferenceable element.
+			void erase (iterator position) { _tree.rb_delete(position->first, true); }
+			// * The function returns the number of elements erased :
+			size_type erase (const key_type& k) { return _tree.rb_delete(k, true); }
+			// * The function removes a range of elements :
+			void erase (iterator first, iterator last)
 			{
 				while (first != last)
-				{
-					_tree.rb_insert(*first);
-					first++;
-				}
+					erase(first++);
 			}
+		// ! Clear :
+			// * clear Content :
+			// void clear() {_tree.clear(*_tree.root());}
+			void clear(void)
+			{
+				iterator start = begin();
+				iterator end = this->end();
+
+				erase(start, end);
+			}
+		
+		// ! Swap :
+			// * 
+			void swap (map& x){}
 		
 		// **********************************************************************************
 		// * 																	  			*
@@ -208,5 +235,14 @@ namespace ft
 			tree			_tree;
 			value_compare	_less;
 			allocator_type	_alloc;
+		private :
+			class accessor
+			{
+				public :
+				key_type operator() (value_type p) const
+				{
+					return p.first;
+				}
+			};
 	};
 }

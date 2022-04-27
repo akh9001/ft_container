@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/24 18:27:33 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/04/26 23:33:59 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/04/27 18:17:40 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,8 @@ namespace ft
 			
 			//* Constructor & destructor:
 			redBlackTree(void) : _less(), _alloc(), _root(NULL), _size(0) {}
-			~redBlackTree(void) {}
+			
+			~redBlackTree(void) { clear(_root);}
 		
 		//*************************************************************************
 		//*																		  *
@@ -235,15 +236,17 @@ namespace ft
 		//*************************************************************************
 		//*																		  *
 		//*							Tree Utilities :							  *
-		//*		0 -  find														  *
-		//*		1 -  search														  *
-		//*		2 -  inoderprint												  *
-		//*		3 -  min														  *
-		//*		4 -  max														  *
-		//*		5 -  successor													  *
-		//*		6 -  predecessor												  *
-		//*		7 -  create_node												  *
-		//*		8 -  rb_transplant												  *
+		//*		 0 -  find														  *
+		//*		 1 -  search														  *
+		//*		 2 -  inoderprint												  *
+		//*		 3 -  min														  *
+		//*		 4 -  max														  *
+		//*		 5 -  successor													  *
+		//*		 6 -  predecessor												  *
+		//*		 7 -  create_node												  *
+		//*		 8 -  rb_transplant												  *
+		//*		 9 -  clear														  *
+		//*		10 -  swap														  *
 		//*																		  *
 		//*************************************************************************
 			
@@ -356,6 +359,16 @@ namespace ft
 					u->parent->right = v;
 				if (v)
 					v->parent = u->parent;
+			}
+			//* Clear content
+			void	clear(node_ptr root)
+			{
+				if (root == NULL)
+					return;
+				/* first delete both subtrees */
+				clear(root->left);
+				clear(root->right);
+				rb_delete(Accesor()(root->data), false);
 			}
 
 		//*************************************************************************
@@ -592,7 +605,7 @@ namespace ft
 				}
 			}
 			
-			void	bst_delete(key_type key)
+			bool	rb_delete(key_type key, bool balance)
 			{
 				node_ptr	z; // the node to be deleted
 				node_ptr	y; // z's successor
@@ -603,13 +616,13 @@ namespace ft
 				
 				z = find(_root, key);
 				if (!z)
-					return ;
+					return false;
 				if (z == _root && !z->right && !z->left)
 				{
 					_root = NULL;
 					_alloc.destroy(z);
 					_alloc.deallocate(z, 1);
-					return;
+					return true;
 				}
 				y = z;
 				y_original_color = y->color;
@@ -652,9 +665,10 @@ namespace ft
 				_alloc.destroy(z);
 				_alloc.deallocate(z, 1);
 				_size -= 1;
-				rb_delete_fix(x, x_parent, y_original_color);
+				if (balance)
+					rb_delete_fix(x, x_parent, y_original_color);
+				return true;
 			}
-			
 		//*************************************************************************
 		//*																		  *
 		//*							Help Functions : 							  *
