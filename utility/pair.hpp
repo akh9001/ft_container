@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/20 16:13:08 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/04/24 22:08:37 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/04/26 23:30:33 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,9 @@
 //*																					*
 //*																					*
 //***********************************************************************************
+
+#pragma once
+#include <iostream>
 
 namespace ft
 {
@@ -37,7 +40,7 @@ namespace ft
 				pair() : first(), second() {}
 			//? 2- copy constructor :
 				template<class U, class V>
-					pair (const pair<U, V>& pr) : first(pr.first), second(pr.second) {}
+				pair (const pair<U, V>& pr) : first(pr.first), second(pr.second) {}
 			//? 3- initialization constructor :
 				pair (const first_type& a, const second_type& b) : first(a), second(b) {}
 		//! operator= :

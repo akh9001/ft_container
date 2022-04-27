@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/01 11:40:31 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/04/05 03:29:56 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/04/26 10:53:23 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ namespace ft
 		//* Resizes the container so that it contains n elements.
 			void resize (size_type n, value_type val = value_type())
 			{
-				size_type				i = 0;
+				size_type		i = 0;
 				pointer			tmp = _ptr;
 				size_type		newCapacity = n > _capacity * 2 ? n : _capacity * 2;
 				allocator_type	tmp_alloc;
@@ -440,7 +440,7 @@ namespace ft
 				{
 					while(i-- > 0)
 						_alloc.destroy(tmpBegin + i);
-					_alloc.deallocate(tmpBegin,a);
+					_alloc.deallocate(tmpBegin, a);
 					throw;
 				}
 				i = 0;

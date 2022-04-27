@@ -6,20 +6,19 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/22 13:26:40 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/04/25 00:01:01 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/04/26 21:10:45 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-// #include "../utility/rb_tree.hpp"
-#include "../srcs/map.hpp"
+#include "../utility/utility.hpp"
 
 namespace ft
 {
 	template < class Key, class T, class Compare, class Alloc >
 	class map;
-	template <typename T, typename value_compare, typename Alloc >
-	class redBlackTree;
+	// template <typename T, typename Key, typename key_accessor, typename key_compare, typename Alloc >
+	// class redBlackTree;
 	template <typename T>
 	class bidirectional_iterator
 	{
@@ -33,14 +32,14 @@ namespace ft
 			typedef typename node::pointer							node_ptr;
 
 		// //! getter function
-			node_ptr	get_root(void) const{ return(__root);}
+			node_ptr*	get_root(void) const{ return(__root);}
 			node_ptr	get_current(void) const{ return(__current);}
 		//! Constructors :
 			bidirectional_iterator(void) : __current(), __root() {}
-			bidirectional_iterator(node_ptr current, node_ptr root) : __current(current), __root(root) {}
+			bidirectional_iterator(node_ptr current, node_ptr* root) : __current(current), __root(root) {}
 			
 			template <typename TT>
-        	operator bidirectional_iterator<TT> () { return bidirectional_iterator<TT> (reinterpret_cast <typename bidirectional_iterator<TT>::node_ptr> (__current) , reinterpret_cast <typename bidirectional_iterator<TT>::node_ptr> (__root)); }
+        	operator bidirectional_iterator<TT> () { return bidirectional_iterator<TT> (reinterpret_cast <typename bidirectional_iterator<TT>::node_ptr> (__current) , reinterpret_cast <typename bidirectional_iterator<TT>::node_ptr *> (__root)); }
 			
 			//template <typename Iter>
 			bidirectional_iterator(const bidirectional_iterator& it) {*this = it;}
@@ -62,7 +61,7 @@ namespace ft
 				// //* increment and decrement operators :
 				bidirectional_iterator&	operator++(void)  //* prefix has no parameter
 				{
-					if (__current == __current->max(__root))
+					if (__current == __current->max(*__root))
 						__current = NULL;
 					else
 						__current = __current->successor(__current);
@@ -72,7 +71,7 @@ namespace ft
 				{
 					node_ptr	tmp(__current);
 
-					if (__current == __current->max(__root))
+					if (__current == __current->max(*__root))
 						__current = NULL;
 					else
 						__current = __current->successor(__current);
@@ -80,7 +79,7 @@ namespace ft
 				}
 				bidirectional_iterator&			operator--(void) //* prefix has no parameter
 				{
-					node_ptr max = __current->max(__root);
+					node_ptr max = __current->max(*__root);
 
 					if ((__current == NULL) && max)
 						__current = max;
@@ -91,7 +90,7 @@ namespace ft
 				bidirectional_iterator			operator--(int)
 				{
 					node_ptr	tmp(__current);
-					node_ptr	max = __current->max(__root);
+					node_ptr	max = __current->max(*__root);
 					
 					if (__current == NULL)
 						__current =  max;
@@ -105,7 +104,7 @@ namespace ft
 				
 		private :
 			node_ptr		__current;
-			node_ptr		__root;
+			node_ptr*		__root;
 	};
 
 	template <typename _IterL, typename _IterR> 

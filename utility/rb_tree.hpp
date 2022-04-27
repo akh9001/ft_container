@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/24 18:27:33 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/04/25 00:07:42 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/04/26 23:33:59 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,15 +38,18 @@
 
 namespace ft
 {
+	template <class T1, class T2>
+		struct pair;
+	template <class T1, class T2>
+		pair<T1, T2> make_pair (T1 x, T2 y);
+	template <typename T>
+	class bidirectional_iterator;
 	//*************************************************************************
 	//*																		  *
 	//*							Node structure							  	  *
 	//*																		  *
 	//*************************************************************************		
-	
-	/*
-	
-	*/
+
 	template <typename T>
 	struct node
 	{
@@ -79,6 +82,7 @@ namespace ft
 			color = src.color;
 			return (*this);
 		}
+
 		pointer	min(pointer x) const
 		{
 			while (x->left != NULL)
@@ -125,7 +129,6 @@ namespace ft
 		~node(void) {}
 	};
 
-	
 
 	//! ***************************************************************************
 	//! 																		  *
@@ -133,19 +136,23 @@ namespace ft
 	//! 																		  *
 	//! ***************************************************************************	
 	
-	template <typename T, typename value_compare, typename Alloc = std::allocator<T> >
+	template <typename T, typename Key, typename Accesor, typename Compare, typename Alloc = std::allocator<T> >
 	class redBlackTree
 	{
 		public:
 			//* Member type	:
 			typedef T													value_type;
-			typedef value_compare										key_compare;
+			typedef Key													key_type;
+			typedef Compare												key_compare;
 			typedef typename ft::node<value_type>						node;
 			typedef typename ft::node<value_type>::pointer				node_ptr;
+			typedef typename ft::bidirectional_iterator<value_type>		iterator;
 			// ? https://stackoverflow.com/questions/14148756/what-does-template-rebind-do
 			typedef	typename Alloc::template rebind<node>::other		alloc_type;
+			typedef	size_t												size_type;
+			
 			//* Constructor & destructor:
-			redBlackTree(void) : _less(), _alloc(), _root(NULL) {}
+			redBlackTree(void) : _less(), _alloc(), _root(NULL), _size(0) {}
 			~redBlackTree(void) {}
 		
 		//*************************************************************************
@@ -153,9 +160,10 @@ namespace ft
 		//*								Geters									  *
 		//*																		  *
 		//*************************************************************************
-			// type * cont ptr;
-			node_ptr	get_root(void) { return _root; }
-			node_ptr	get_begin(void) { return _root->min(_root); }
+			node_ptr*	root(void) { return &_root; }
+			node_ptr	begin(void) { return _root->min(_root); }
+			size_type	size(void) {return _size;}
+			size_type	max_size(void) {return (_alloc.max_size());}
 		//*************************************************************************
 		//*																		  *
 		//*								Print Tree								  *
@@ -227,6 +235,7 @@ namespace ft
 		//*************************************************************************
 		//*																		  *
 		//*							Tree Utilities :							  *
+		//*		0 -  find														  *
 		//*		1 -  search														  *
 		//*		2 -  inoderprint												  *
 		//*		3 -  min														  *
@@ -238,15 +247,32 @@ namespace ft
 		//*																		  *
 		//*************************************************************************
 			
-			node_ptr	search(node_ptr x, value_type key)
+			node_ptr	find(node_ptr x, key_type key)
 			{
-				if (x == NULL || x->data == key)
+				if (x == NULL)
 					return x;
-				if (_less(key, x->data))
-					return search(x->left, key);
+				if (_less(key, Accesor()(x->data)))
+					return find(x->left, key);
+				else if (_less(Accesor()(x->data), key))
+					return find(x->right, key);
 				else
-					return search(x->right, key);
+					return x;
 			}
+			
+			node_ptr	search(node_ptr x, value_type val)
+			{
+				key_type	key = Accesor()(val);
+
+				if (x == NULL)
+					return x;
+				if (_less(key, Accesor()(x->data)))
+					return search(x->left, val);
+				else if (_less(Accesor()(x->data), key))
+					return search(x->right, val);
+				else
+					return x;
+			}
+
 		// In-Order traversal
 		// Left Subtree -> Node -> Right Subtree
 			void		inoderprint(node_ptr x)
@@ -259,19 +285,63 @@ namespace ft
 					inoderprint(x->right);
 				}
 			}
+
+			node_ptr	min(node_ptr x) const
+			{
+				while (x->left != NULL)
+					x = x->left;
+				return x;
+			}
 			
-			node_ptr	create_node(value_type key, node_ptr parent)
+			node_ptr	max(node_ptr x) const
+			{
+				while (x->right != NULL)
+					x = x->right;
+				return x;
+			}
+			
+			node_ptr	successor(node_ptr x) const
+			{
+				node_ptr	y;
+				
+				if (x->right != NULL)
+					return (min(x->right));
+				y = x->parent;
+				while (y != NULL && x == y->right)
+				{
+					x = y;
+					y = y->parent;
+				}
+				return y;
+			}
+			
+			node_ptr	predecessor(node_ptr x) const
+			{
+				node_ptr	y;
+				
+				if (x->left != NULL)
+					return (max(x->left));
+				y = x->parent;
+				while (y != NULL && x == y->left)
+				{
+					x = y;
+					y = y->parent;
+				}
+				return y;
+			}
+
+			node_ptr	create_node(value_type val, node_ptr parent)
 			{
 				node_ptr	new_node;
 				
 				new_node = _alloc.allocate(1);
-				// _alloc.construct(new_node, node(key, NULL, parent));
-				_alloc.construct(new_node, key);
+				// _alloc.construct(new_node, node(val, NULL, parent));
+				_alloc.construct(new_node, val);
 				new_node->parent = parent;
 				new_node->left = NULL;
 				new_node->right = NULL;
 				new_node->color = RED;
-				// new_node->data = key;
+				// new_node->data = val;
 				return new_node;
 			}
 			
@@ -345,7 +415,7 @@ namespace ft
 		//*																		  *
 		//*************************************************************************
 			
-			node_ptr		bst_insert(value_type key)
+			pair<node_ptr, bool>	bst_insert(value_type key)
 			{
 				node_ptr	x = _root;
 				node_ptr	y = NULL;
@@ -357,27 +427,28 @@ namespace ft
 					while (x != NULL)
 					{
 						y = x;
-						if (_less(key, x->data))
+						if (_less(Accesor()(key), Accesor()(x->data)))
 							x = x->left;
 						else
 							x = x->right;
 					}
 					z = create_node(key, y);
-					if (y == NULL) //? should I : _nil.left = z ??
+					if (y == NULL)
 						_root = z;
-					else if (_less(key, y->data))
+					else if (_less(Accesor()(key), Accesor()(y->data)))
 						y->left = z;
 					else
 						y->right = z;
+					_size += 1;
+					return make_pair(z, true);
 				}
-				// else
-				// 	z->data = key;
-				return z;
+				return make_pair(z, false);;
 			}
 			
-			void		rb_insert(value_type key)
+			pair<iterator, bool>	rb_insert(value_type key)
 			{
-				node_ptr k = bst_insert(key);
+				pair<node_ptr, bool> p = bst_insert(key);
+				node_ptr k = p.first;
 				
 				if (!_root)
 					_root = k;
@@ -422,6 +493,7 @@ namespace ft
 					}
 				}
 				_root->color = BLACK;
+				return make_pair(iterator(p.first, &_root), p.second);
 			}
 			
 		//*************************************************************************
@@ -520,7 +592,7 @@ namespace ft
 				}
 			}
 			
-			void	bst_delete(value_type key)
+			void	bst_delete(key_type key)
 			{
 				node_ptr	z; // the node to be deleted
 				node_ptr	y; // z's successor
@@ -529,7 +601,7 @@ namespace ft
 				node_ptr	x_parent;
 				bool		y_original_color;
 				
-				z = search(_root, key);
+				z = find(_root, key);
 				if (!z)
 					return ;
 				if (z == _root && !z->right && !z->left)
@@ -579,6 +651,7 @@ namespace ft
 				}
 				_alloc.destroy(z);
 				_alloc.deallocate(z, 1);
+				_size -= 1;
 				rb_delete_fix(x, x_parent, y_original_color);
 			}
 			
@@ -620,5 +693,6 @@ namespace ft
 			key_compare		_less;
 			alloc_type		_alloc;
 			node_ptr		_root;
+			size_type		_size;
 	};
 }

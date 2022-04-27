@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 18:38:28 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/04/24 23:58:22 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/04/27 01:31:10 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,7 @@
 
 namespace ft
 {
-	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> >		// map::allocator_type
-	           >
+	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key,T> >	>
 	class map
 	{
 		public :
@@ -52,23 +51,25 @@ namespace ft
 		//*		size_t		: size_t.														*
 		//***********************************************************************************
 		class value_compare;
-		typedef	Key																	key_type;
-		typedef	T																	mapped_type;
-		typedef	ft::pair<const key_type,mapped_type>								value_type;
-		typedef	Compare																key_compare;
-		typedef	typename map::value_compare											value_compare;
-		typedef	Alloc																allocator_type;
-		typedef	typename allocator_type::reference									reference;
-		typedef typename allocator_type::const_reference							const_reference;
-		typedef typename allocator_type::pointer									pointer;
-		typedef typename allocator_type::const_pointer								const_pointer;
-		typedef typename ft::bidirectional_iterator<value_type>						iterator;
-		typedef typename ft::bidirectional_iterator<const value_type>				const_iterator;
-		typedef typename ft::reverse_iterator<iterator>								reverse_iterator;
-		typedef typename ft::reverse_iterator<const_iterator>						const_reverse_iterator;
-		typedef typename iterator::difference_type									difference_type;
-		typedef	size_t																size_type;
-		typedef typename ft::redBlackTree<value_type, value_compare, Alloc>			tree;
+		struct accessor;
+		typedef	Key																						key_type;
+		typedef	T																						mapped_type;
+		typedef	ft::pair<const key_type,mapped_type>													value_type;
+		typedef	Compare																					key_compare;
+		typedef	typename map::value_compare																value_compare;
+		typedef	typename map::accessor																	key_accessor;
+		typedef	Alloc																					allocator_type;
+		typedef	typename allocator_type::reference														reference;
+		typedef typename allocator_type::const_reference												const_reference;
+		typedef typename allocator_type::pointer														pointer;
+		typedef typename allocator_type::const_pointer													const_pointer;
+		typedef typename ft::bidirectional_iterator<value_type>											iterator;
+		typedef typename ft::bidirectional_iterator<const value_type>									const_iterator;
+		typedef typename ft::reverse_iterator<iterator>													reverse_iterator;
+		typedef typename ft::reverse_iterator<const_iterator>											const_reverse_iterator;
+		typedef typename iterator::difference_type														difference_type;
+		typedef	size_t																					size_type;
+		typedef typename ft::redBlackTree<value_type, key_type, key_accessor, key_compare, Alloc>		tree;
 		
 		class value_compare
 		{
@@ -87,16 +88,74 @@ namespace ft
 			}
 		};
 		
+		struct accessor
+		{
+			key_type operator() (value_type p) const
+			{
+				return p.first;
+			}
+		};
+		
 		// **********************************************************************************
 		// * 																	  			*
 		// *								Iterator										*
 		// *																				*
 		// **********************************************************************************
 		
-		iterator begin() { return iterator(_tree.get_begin(), _tree.get_root());}
-		const_iterator begin() const { return const_iterator(_tree.begin(), _tree.get_root());}
-		iterator end() {return iterator(NULL, _tree.get_root());}
-		const_iterator end() const{return const_iterator(NULL, _tree.get_root());}
+		//* Returns an iterator pointing to the first element in the vector.
+			iterator begin() { return iterator(_tree.begin(), _tree.root());}
+			const_iterator begin() const { return const_iterator(_tree.begin(), _tree.root());}
+		//* Returns an iterator referring to the past-the-end element in the vector container.
+		//? The past-the-end element is the theoretical element that would follow the last element in the vector.
+		//? It does not point to any element, and thus shall not be dereferenced.
+			iterator end() {return iterator(NULL, _tree.root());}
+			const_iterator end() const{return const_iterator(NULL, _tree.root());}
+		//* Returns a reverse iterator pointing to the last element in the vector.
+		// ? https://en.cppreference.com/w/cpp/iterator/reverse_iterator
+			reverse_iterator rbegin() {return (reverse_iterator(end()));}
+			const_reverse_iterator rbegin() const {return (const_reverse_iterator(end()));}
+		//* Returns a reverse iterator pointing to the theoretical element preceding the first element in the vector.
+			reverse_iterator rend(){ return(reverse_iterator(begin()));}
+			const_reverse_iterator rend() const{ return(const_reverse_iterator(begin()));}
+
+		// **********************************************************************************
+		// * 																	  			*
+		// *								Capacity										*
+		// *																				*
+		// **********************************************************************************
+		
+		// * Returns whether the map container is empty :
+			bool empty() const {return (_tree.size == 0);}
+		//* Returns the number of elements in the map container :
+			size_type size() const {return _tree.size;}
+		//* Return maximum size :
+			size_type max_size() const {return _tree.max_size;}
+
+		// **********************************************************************************
+		// * 																	  			*
+		// *							 Element access 									*
+		// *																				*
+		// **********************************************************************************
+		
+			mapped_type& operator[] (const key_type& k)
+			{
+				iterator	it;
+				value_type	pair(k, mapped_type());
+
+				it = insert(pair).first;
+				return (it->second);
+			}
+
+		// **********************************************************************************
+		// * 																	  			*
+		// *								Observers										*
+		// *																				*
+		// **********************************************************************************
+		
+		// * Returns a copy of the comparison object used by the container to compare keys :
+			key_compare key_comp() const {return _less.comp;}
+		// * Return value comparison object :
+			value_compare value_comp() const {return _less;}
 
 		// **********************************************************************************
 		// * 																	  			*
@@ -104,8 +163,47 @@ namespace ft
 		// *																				*
 		// **********************************************************************************
 		
-		// pair<iterator,bool> insert (const value_type& val) {}
-		// void
+		// * Single element :
+			pair<iterator,bool> insert (const value_type& val)
+			{
+				return _tree.rb_insert(val);
+			}
+		// * With hint (the position) :
+			iterator insert (iterator position, const value_type& val)
+			{
+				(void)position;
+				return _tree.rb_insert(val).first;
+			}
+		// * Range :
+			template <class InputIterator>
+			void insert (InputIterator first, InputIterator last)
+			{
+				while (first != last)
+				{
+					_tree.rb_insert(*first);
+					first++;
+				}
+			}
+		
+		// **********************************************************************************
+		// * 																	  			*
+		// *								Operations										*
+		// *																				*
+		// **********************************************************************************
+		
+		//* Get iterator to element :
+			iterator find (const key_type& k) { return iterator(_tree.find(*(_tree.root()), k), _tree.root());}
+			const_iterator find (const key_type& k) const { return const_iterator(_tree.find(k), _tree.root());}
+			size_type count (const key_type& k) const { return (_tree.find(k) != NULL);}
+		// **********************************************************************************
+		// * 																	  			*
+		// *								Allocator										*
+		// *																				*
+		// **********************************************************************************
+		
+		// * Returns a copy of the allocator object associated with the map :
+			allocator_type get_allocator() const {return _alloc;}
+		
 		// private :
 			tree			_tree;
 			value_compare	_less;
