@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/24 18:27:33 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/04/28 15:06:01 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/04/28 16:34:16 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -681,6 +681,7 @@ namespace ft
 					_root = NULL;
 					_alloc.destroy(z);
 					_alloc.deallocate(z, 1);
+					_size--;
 					return true;
 				}
 				y = z;
@@ -723,7 +724,7 @@ namespace ft
 				}
 				_alloc.destroy(z);
 				_alloc.deallocate(z, 1);
-				_size -= 1;
+				_size--;
 				if (balance)
 					rb_delete_fix(x, x_parent, y_original_color);
 				return true;

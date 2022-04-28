@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 18:38:28 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/04/28 15:08:16 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/04/28 16:42:45 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -265,7 +265,6 @@ namespace ft
 			iterator lower_bound (const key_type& key) { return iterator(_tree.lower_bound(key), _tree.root());}
 			const_iterator lower_bound (const key_type& key) const
 			{ 
-				std::cout << "Halima" << std::endl;
 				return const_iterator(_tree.lower_bound(key), _tree.root());
 			}
 		// ! upper_bound
