@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 06:32:33 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/03/18 08:23:10 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/04/28 15:15:45 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,12 @@ namespace ft
 			//? Member functions :
 			iterator_type	base(void) const{ return(_it);} //* Getter : Returns a copy of the base iterator
 			//* operator* Returns a reference to the element previous to current.
-			reference		operator*() const {return(*(_it - 1));}
+			reference		operator*() const 
+			{
+				iterator_type	tmp = _it;
+				return(*--tmp);
+				// return(*(_it - 1));
+			}
 			//* operator+ Addition operator
 			reverse_iterator operator+( difference_type n ) const { return reverse_iterator(_it - n);}
 			//* operator++ Increment iterator position
@@ -59,7 +64,12 @@ namespace ft
 			//* operator-= Retrocede iterator
 			reverse_iterator& operator-=( difference_type n ) {_it += n; return *this;}
 			//* operator-> Returns a pointer to the element previous to current.
-			pointer		operator->() const { return((_it - 1).operator->());}
+			pointer		operator->() const 
+			{
+				iterator_type	tmp = _it;
+				return &(*--tmp);
+				// return((_it - 1).operator->());
+			}
 			//* operator[] Returns a reference to the element at specified relative location, that is, base()[-n-1].
 			reference	operator[]( difference_type n ) const {return ((_it - 1).operator[](n));}
 		private :

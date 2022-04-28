@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/24 18:27:33 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/04/27 18:17:40 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/04/28 15:06:01 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@
 #include <string>
 #define BLACK	0
 #define RED		1
-#define RESET   "\033[0m"
-#define BLACKK   "\033[1m\033[30m"      /* Bold Black */
-#define REDD     "\033[31m"      		/* Red */
+// #define RESET   "\033[0m"
+// #define BLACKK   "\033[1m\033[30m"      /* Bold Black */
+// #define REDD     "\033[31m"      		/* Red */
 
 // ? Binary tree :
 // * The binary tree are a type of tree where each node can have at most 2 childs.
@@ -85,15 +85,17 @@ namespace ft
 
 		pointer	min(pointer x) const
 		{
-			while (x->left != NULL)
-				x = x->left;
+			if (x)
+				while (x->left != NULL)
+					x = x->left;
 			return x;
 		}
 		
 		pointer	max(pointer x) const
 		{
-			while (x->right != NULL)
-				x = x->right;
+			if (x)
+				while (x->right != NULL)
+					x = x->right;
 			return x;
 		}
 		
@@ -146,6 +148,7 @@ namespace ft
 			typedef Compare												key_compare;
 			typedef typename ft::node<value_type>						node;
 			typedef typename ft::node<value_type>::pointer				node_ptr;
+			typedef typename ft::node<const value_type>::pointer		const_node_ptr;
 			typedef typename ft::bidirectional_iterator<value_type>		iterator;
 			// ? https://stackoverflow.com/questions/14148756/what-does-template-rebind-do
 			typedef	typename Alloc::template rebind<node>::other		alloc_type;
@@ -161,83 +164,85 @@ namespace ft
 		//*								Geters									  *
 		//*																		  *
 		//*************************************************************************
-			node_ptr*	root(void) { return &_root; }
-			node_ptr	begin(void) { return _root->min(_root); }
-			size_type	size(void) {return _size;}
-			size_type	max_size(void) {return (_alloc.max_size());}
+			node_ptr*			root(void) { return &_root; }
+			const_node_ptr*		root(void) const { return (const_node_ptr *)&_root; }
+			node_ptr			begin(void) { return _root->min(_root); }
+			const_node_ptr		begin(void) const { return (const_node_ptr)_root->min(_root); }
+			size_type			size(void) const  {return _size;}
+			size_type			max_size(void) {return (_alloc.max_size());}
 		//*************************************************************************
 		//*																		  *
 		//*								Print Tree								  *
 		//*																		  *
 		//*************************************************************************
 
-			// * Print constructed binary tree
-			struct Trunk
-			{
-				Trunk *prev;
-				std::string str;
+			// // * Print constructed binary tree
+			// struct Trunk
+			// {
+			// 	Trunk *prev;
+			// 	std::string str;
 			
-				Trunk(Trunk *prev, std::string str)
-				{
-					this->prev = prev;
-					this->str = str;
-				}
-			};
+			// 	Trunk(Trunk *prev, std::string str)
+			// 	{
+			// 		this->prev = prev;
+			// 		this->str = str;
+			// 	}
+			// };
 			
-			// Helper function to print branches of the binary tree
-			void showTrunks(Trunk *p)
-			{
-				if (p == nullptr) {
-					return;
-				}
+			// // Helper function to print branches of the binary tree
+			// void showTrunks(Trunk *p)
+			// {
+			// 	if (p == nullptr) {
+			// 		return;
+			// 	}
 			
-				showTrunks(p->prev);
-				std::cout << p->str;
-			}
+			// 	showTrunks(p->prev);
+			// 	std::cout << p->str;
+			// }
 			
-			void printTree(node_ptr root, Trunk *prev, bool isLeft)
-			{
-				if (root == nullptr) {
-					return;
-				}
+			// void printTree(node_ptr root, Trunk *prev, bool isLeft)
+			// {
+			// 	if (root == nullptr) {
+			// 		return;
+			// 	}
 			
-				std::string prev_str = "    ";
-				Trunk *trunk = new Trunk(prev, prev_str);
+			// 	std::string prev_str = "    ";
+			// 	Trunk *trunk = new Trunk(prev, prev_str);
 			
-				printTree(root->right, trunk, true);
+			// 	printTree(root->right, trunk, true);
 			
-				if (!prev) {
-					trunk->str = "———";
-				}
-				else if (isLeft)
-				{
-					trunk->str = ".———";
-					prev_str = "   |";
-				}
-				else {
-					trunk->str = "`———";
-					prev->str = prev_str;
-				}
+			// 	if (!prev) {
+			// 		trunk->str = "———";
+			// 	}
+			// 	else if (isLeft)
+			// 	{
+			// 		trunk->str = ".———";
+			// 		prev_str = "   |";
+			// 	}
+			// 	else {
+			// 		trunk->str = "`———";
+			// 		prev->str = prev_str;
+			// 	}
 			
-				showTrunks(trunk);
-				if (root->color == BLACK)
-					std::cout  << BLACKK << " " << root->data << RESET << std::endl;
-				else
-					std::cout  << REDD << " " << root->data << RESET << std::endl;
+			// 	showTrunks(trunk);
+			// 	if (root->color == BLACK)
+			// 		std::cout  << BLACKK << " " << root->data << RESET << std::endl;
+			// 	else
+			// 		std::cout  << REDD << " " << root->data << RESET << std::endl;
 			
-				if (prev) {
-					prev->str = prev_str;
-				}
-				trunk->str = "   |";
+			// 	if (prev) {
+			// 		prev->str = prev_str;
+			// 	}
+			// 	trunk->str = "   |";
 			
-				printTree(root->left, trunk, false);
-			}
+			// 	printTree(root->left, trunk, false);
+			// }
 		
 		//*************************************************************************
 		//*																		  *
 		//*							Tree Utilities :							  *
 		//*		 0 -  find														  *
-		//*		 1 -  search														  *
+		//*		 1 -  search													  *
 		//*		 2 -  inoderprint												  *
 		//*		 3 -  min														  *
 		//*		 4 -  max														  *
@@ -247,7 +252,8 @@ namespace ft
 		//*		 8 -  rb_transplant												  *
 		//*		 9 -  clear														  *
 		//*		10 -  swap														  *
-		//*																		  *
+		//*		11 -  lower_bound												  *
+		//*		12 -  upper_bound												  *
 		//*************************************************************************
 			
 			node_ptr	find(node_ptr x, key_type key)
@@ -260,6 +266,18 @@ namespace ft
 					return find(x->right, key);
 				else
 					return x;
+			}
+			
+			const_node_ptr	find(const_node_ptr x, key_type key) const
+			{
+				if (x == NULL)
+					return x;
+				if (_less(key, Accesor()(x->data)))
+					return find(x->left, key);
+				else if (_less(Accesor()(x->data), key))
+					return find(x->right, key);
+				else
+					return (const_node_ptr)x;
 			}
 			
 			node_ptr	search(node_ptr x, value_type val)
@@ -291,15 +309,17 @@ namespace ft
 
 			node_ptr	min(node_ptr x) const
 			{
-				while (x->left != NULL)
-					x = x->left;
+				if (x)
+					while (x->left != NULL)
+						x = x->left;
 				return x;
 			}
 			
 			node_ptr	max(node_ptr x) const
 			{
-				while (x->right != NULL)
-					x = x->right;
+				if (x)
+					while (x->right != NULL)
+						x = x->right;
 				return x;
 			}
 			
@@ -370,6 +390,45 @@ namespace ft
 				clear(root->right);
 				rb_delete(Accesor()(root->data), false);
 			}
+			
+			void	swap(redBlackTree& src)
+			{
+				std::swap(_less, src._less);
+				std::swap(_alloc, src._alloc);
+				std::swap(_root, src._root);
+				std::swap(_size, src._size);
+			}
+
+			// // * lower bound :
+			node_ptr	lower_bound(const key_type& key) 
+			{
+				node_ptr	beg = min(_root);
+				node_ptr	end = max(_root);
+				
+
+				while (beg != end)
+				{
+					if (!_less(Accesor()(beg->data), key))
+						return beg;
+					beg = successor(beg);
+				}
+				return (beg);
+			}
+			
+			const_node_ptr	lower_bound(const key_type& key) const
+			{
+				node_ptr	beg = min(_root);
+				node_ptr	end = max(_root);
+				
+
+				while (beg != end)
+				{
+					if (!_less(Accesor()(beg->data), key))
+						return (const_node_ptr)beg;
+					beg = successor(beg);
+				}
+				return ((const_node_ptr)beg);
+			}
 
 		//*************************************************************************
 		//* 																	  *
@@ -433,7 +492,7 @@ namespace ft
 				node_ptr	x = _root;
 				node_ptr	y = NULL;
 				node_ptr	z = search(_root, key);
-				node_ptr	parent;
+				// node_ptr	parent;
 
 				if (!z)
 				{
@@ -453,9 +512,9 @@ namespace ft
 					else
 						y->right = z;
 					_size += 1;
-					return make_pair(z, true);
+					return ft::make_pair(z, true);
 				}
-				return make_pair(z, false);;
+				return ft::make_pair(z, false);;
 			}
 			
 			pair<iterator, bool>	rb_insert(value_type key)
@@ -506,7 +565,7 @@ namespace ft
 					}
 				}
 				_root->color = BLACK;
-				return make_pair(iterator(p.first, &_root), p.second);
+				return ft::make_pair(iterator(p.first, &_root), p.second);
 			}
 			
 		//*************************************************************************
@@ -526,7 +585,7 @@ namespace ft
 					// fixDelete(x);
 					// * RB-DELETE-FIXUP
 					node_ptr	s;
-					node_ptr	p;
+					// node_ptr	p;
 					while (x != _root && isBlack(x)) //? x always point to a nonroot, doubly black node : whithin the while loop 
 					{
 						x_parent = x != NULL ? parent(x) : x_parent;

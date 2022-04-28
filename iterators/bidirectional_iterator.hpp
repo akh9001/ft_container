@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/22 13:26:40 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/04/26 21:10:45 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/04/28 14:21:04 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,21 +102,29 @@ namespace ft
 				reference						operator*(void) const {return __current->data;}
 				pointer							operator->(void) const {return &(__current->data);};				
 				
+		bool operator==(const bidirectional_iterator& rhs)
+		{
+			return __current == rhs.__current;
+		}
+		bool operator!=(const bidirectional_iterator& rhs)
+		{
+			return __current != rhs.__current;
+		}
 		private :
 			node_ptr		__current;
 			node_ptr*		__root;
 	};
 
-	template <typename _IterL, typename _IterR> 
-	bool operator==(const bidirectional_iterator<_IterL>& lhs, const bidirectional_iterator<_IterR>& rhs)
-	{
-		// return ((lhs.get_root() == rhs.get_root()) && (lhs.get_current() == rhs.get_current()));
-		return lhs.get_current() == rhs.get_current();
-	}
-	template <typename _IterL, typename _IterR> 
-	bool operator!=(const bidirectional_iterator<_IterL>& lhs, const bidirectional_iterator<_IterR>& rhs)
-	{
-		// return ((lhs.get_root() != rhs.get_root()) && (lhs.get_current() != rhs.get_current()));
-		return lhs.get_current() != rhs.get_current();
-	}
+	// template <typename _IterL, typename _IterR> 
+	// bool operator==(const bidirectional_iterator<_IterL>& lhs, const bidirectional_iterator<_IterR>& rhs)
+	// {
+	// 	// return ((lhs.get_root() == rhs.get_root()) && (lhs.get_current() == rhs.get_current()));
+	// 	return lhs.get_current() == (ft::node<_IterL> *)rhs.get_current();
+	// }
+	// template <typename _IterL, typename _IterR> 
+	// bool operator!=(const bidirectional_iterator<_IterL>& lhs, const bidirectional_iterator<_IterR>& rhs)
+	// {
+	// 	// return ((lhs.get_root() != rhs.get_root()) && (lhs.get_current() != rhs.get_current()));
+	// 	return lhs.get_current() != (ft::node<_IterL> *)rhs.get_current();
+	// }
 }
