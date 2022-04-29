@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/24 18:27:33 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/04/28 23:55:03 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/04/29 02:50:39 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,9 +146,9 @@ namespace ft
 			typedef T													value_type;
 			typedef Key													key_type;
 			typedef Compare												key_compare;
-			typedef typename ft::node<value_type>						node;
-			typedef typename ft::node<value_type>::pointer				node_ptr;
-			typedef typename ft::node<const value_type>::pointer		const_node_ptr;
+			typedef ft::node<value_type>								node;
+			typedef node*												node_ptr;
+			typedef ft::node<const value_type> *						const_node_ptr;
 			typedef typename ft::bidirectional_iterator<value_type>		iterator;
 			// ? https://stackoverflow.com/questions/14148756/what-does-template-rebind-do
 			typedef	typename Alloc::template rebind<node>::other		alloc_type;
