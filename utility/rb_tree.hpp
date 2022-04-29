@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/24 18:27:33 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/04/28 16:34:16 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/04/28 23:55:03 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,7 +169,7 @@ namespace ft
 			node_ptr			begin(void) { return _root->min(_root); }
 			const_node_ptr		begin(void) const { return (const_node_ptr)_root->min(_root); }
 			size_type			size(void) const  {return _size;}
-			size_type			max_size(void) {return (_alloc.max_size());}
+			size_type			max_size(void) const {return (_alloc.max_size());}
 		//*************************************************************************
 		//*																		  *
 		//*								Print Tree								  *
@@ -412,7 +412,9 @@ namespace ft
 						return beg;
 					beg = successor(beg);
 				}
-				return (beg);
+				if (!_less(Accesor()(beg->data), key))
+					return beg;
+				return (NULL);
 			}
 			
 			const_node_ptr	lower_bound(const key_type& key) const
@@ -427,6 +429,8 @@ namespace ft
 						return (const_node_ptr)beg;
 					beg = successor(beg);
 				}
+				if (!_less(Accesor()(beg->data), key))
+					return (const_node_ptr)beg;
 				return ((const_node_ptr)beg);
 			}
 

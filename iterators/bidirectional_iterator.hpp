@@ -6,7 +6,7 @@
 /*   By: akhalidy <akhalidy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/22 13:26:40 by akhalidy          #+#    #+#             */
-/*   Updated: 2022/04/28 14:21:04 by akhalidy         ###   ########.fr       */
+/*   Updated: 2022/04/28 23:59:08 by akhalidy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,17 +29,18 @@ namespace ft
 			typedef T&												reference;
 			typedef std::bidirectional_iterator_tag					iterator_category;
 			typedef typename ft::node<value_type>					node;
+			typedef typename ft::node<const value_type>				const_node;
 			typedef typename node::pointer							node_ptr;
+			typedef typename const_node::pointer					const_node_ptr;
 
 		// //! getter function
 			node_ptr*	get_root(void) const{ return(__root);}
 			node_ptr	get_current(void) const{ return(__current);}
+			
 		//! Constructors :
 			bidirectional_iterator(void) : __current(), __root() {}
 			bidirectional_iterator(node_ptr current, node_ptr* root) : __current(current), __root(root) {}
 			
-			template <typename TT>
-        	operator bidirectional_iterator<TT> () { return bidirectional_iterator<TT> (reinterpret_cast <typename bidirectional_iterator<TT>::node_ptr> (__current) , reinterpret_cast <typename bidirectional_iterator<TT>::node_ptr *> (__root)); }
 			
 			//template <typename Iter>
 			bidirectional_iterator(const bidirectional_iterator& it) {*this = it;}
@@ -52,6 +53,17 @@ namespace ft
 				return(*this);
 			}
 			
+		
+			// template <typename TT>
+			// bidirectional_iterator(const bidirectional_iterator<TT>& it) {
+
+			// 	__current =	(const_node_ptr)it.get_current();
+			// 	__root = (const_node_ptr *)it.get_current();
+			// }
+		
+			template <typename TT>
+        	operator bidirectional_iterator<TT> () { return bidirectional_iterator<TT> (reinterpret_cast <typename bidirectional_iterator<TT>::node_ptr> (__current) , reinterpret_cast <typename bidirectional_iterator<TT>::node_ptr *> (__root)); }
+		
 		// operator bidirectional_iterator<const T>()
 		// {
 		// 	return bidirectional_iterator<const T>(__current, __root);
